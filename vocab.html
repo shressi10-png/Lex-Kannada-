@@ -1,0 +1,30 @@
+<h2>Vocabulary</h2>
+
+<div id="word"></div>
+
+<button onclick="showMeaning()">Show Meaning</button>
+
+<div id="meaning"></div>
+
+<script>
+
+const vocab=[
+
+{k:"ನ್ಯಾಯಾಲಯ",e:"court"},
+{k:"ಅರ್ಜಿದಾರ",e:"petitioner"},
+{k:"ಸಾಕ್ಷಿ",e:"witness"},
+{k:"ತೀರ್ಪು",e:"judgment"}
+
+]
+
+let i=0
+
+document.getElementById("word").innerHTML=vocab[i].k
+
+function showMeaning(){
+
+document.getElementById("meaning").innerHTML=vocab[i].e
+
+}
+
+</script>
