@@ -41,7 +41,7 @@ function runExercise(){
 
 let lesson = lessons[lessonIndex]
 
-if(retryQueue.length>0){
+if(exerciseIndex>6 && retryQueue.length>0){
 
 let retry = retryQueue.shift()
 
@@ -192,7 +192,7 @@ document.getElementById("screen").innerHTML=
 `
 <h2>Incorrect</h2>
 
-<p>This exercise will appear again later.</p>
+<p>This exercise will appear again at the end.</p>
 
 <button onclick="runExercise()">Continue</button>
 `
@@ -239,14 +239,14 @@ document.getElementById("screen").innerHTML=
 <canvas id="canvas" width="320" height="320"
 style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
 
-<button onclick="finishTrace(${index})">Continue</button>
+<button onclick="finishTrace()">Continue</button>
 `
 
 initCanvas(letter)
 
 }
 
-function finishTrace(index){
+function finishTrace(){
 
 if(!hasDrawn){
 
@@ -265,9 +265,26 @@ let lesson = lessons[lessonIndex]
 
 let word = lesson.examples[0]
 let meaning = lesson.meanings[0]
+let breakdown = lesson.breakdown[0]
+let phonetic = lesson.phonetic[0]
 
-let breakdown = "ಕಾ + ನೂ + ನು"
-let phonetic = "kaa + noo + nu"
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Word</h2>
+
+<h1>${word}</h1>
+
+<p><b>Meaning:</b> ${meaning}</p>
+
+<button onclick="showBreakdown('${word}','${meaning}','${breakdown}','${phonetic}')">
+Show breakdown
+</button>
+`
+
+}
+
+function showBreakdown(word,meaning,breakdown,phonetic){
 
 document.getElementById("screen").innerHTML=
 
@@ -279,15 +296,40 @@ document.getElementById("screen").innerHTML=
 <p><b>Meaning:</b> ${meaning}</p>
 
 <h3>Breakdown</h3>
+
+<p style="font-size:22px">${breakdown}</p>
+
+<button onclick="showPronunciation('${word}','${meaning}','${breakdown}','${phonetic}')">
+Show pronunciation
+</button>
+`
+
+}
+
+function showPronunciation(word,meaning,breakdown,phonetic){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Word</h2>
+
+<h1>${word}</h1>
+
+<p><b>Meaning:</b> ${meaning}</p>
+
+<h3>Breakdown</h3>
+
 <p style="font-size:22px">${breakdown}</p>
 
 <h3>Pronunciation</h3>
+
 <p style="font-size:22px">${phonetic}</p>
 
 <button onclick="runExercise()">Finish Lesson</button>
 `
 
 }
+
 function initCanvas(letter){
 
 let canvas=document.getElementById("canvas")
