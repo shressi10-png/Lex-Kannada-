@@ -1,15 +1,24 @@
-const lessons=[
+const lessons = [
 
 {
 letters:["ಕ","ಗ"],
-sound:"ka / ga",
-example:"ಕಾನೂನು (law)"
+sounds:["ka","ga"],
+examples:["ಕಾನೂನು","ಗಡಿ"],
+meanings:["law","border"]
 },
 
 {
 letters:["ತ","ದ"],
-sound:"ta / da",
-example:"ತಪ್ಪು (mistake)"
+sounds:["ta","da"],
+examples:["ತಪ್ಪು","ದಾರಿ"],
+meanings:["mistake","path"]
+},
+
+{
+letters:["ಪ","ಬ"],
+sounds:["pa","ba"],
+examples:["ಪತ್ರ","ಬಾಳೆ"],
+meanings:["letter","banana"]
 }
 
 ]
