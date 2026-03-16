@@ -7,98 +7,30 @@
 
 <title>LexKannada</title>
 
-<style>
-
-body{
-font-family:Arial;
-background:#f5f7fb;
-text-align:center;
-padding:30px;
-}
-
-h1{
-font-size:40px;
-margin-bottom:10px;
-}
-
-.subtitle{
-color:#666;
-margin-bottom:40px;
-}
-
-.card{
-background:white;
-padding:20px;
-margin:15px auto;
-width:85%;
-border-radius:15px;
-font-size:20px;
-box-shadow:0 4px 10px rgba(0,0,0,0.1);
-}
-
-button{
-width:100%;
-padding:20px;
-border:none;
-background:#2f80ed;
-color:white;
-font-size:20px;
-border-radius:12px;
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
+<div id="app">
+
 <h1>LexKannada</h1>
 
-<p class="subtitle">
+<div id="screen"></div>
 
-Learn to read and write Kannada
+<div class="nav">
 
-</p>
-
-<div class="card">
-
-<button onclick="location.href='learn.html'">
-
-Start Learning
-
-</button>
+<button onclick="showHome()">Home</button>
+<button onclick="startLesson()">Learn</button>
+<button onclick="showWriting()">Write</button>
 
 </div>
 
-<div class="card">
-
-<button onclick="location.href='writinglab.html'">
-
-Practice Writing
-
-</button>
-
 </div>
 
-<div class="card">
-
-<button onclick="location.href='readinglab.html'">
-
-Reading Practice
-
-</button>
-
-</div>
-
-<div class="card">
-
-<button onclick="location.href='vocab.html'">
-
-Vocabulary
-
-</button>
-
-</div>
+<script src="lessons.js"></script>
+<script src="app.js"></script>
 
 </body>
 
