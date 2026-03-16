@@ -17,7 +17,11 @@ document.getElementById("screen").innerHTML=
 `
 <h2>Welcome</h2>
 
-<button onclick="startLesson()">Start Lesson</button>
+<button onclick="startLesson()">Continue</button>
+
+<br><br>
+
+<button onclick="showLessons()">Choose Lesson</button>
 `
 
 }
