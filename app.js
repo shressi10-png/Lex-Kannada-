@@ -96,6 +96,40 @@ document.getElementById("screen").innerHTML=html
 
 }
 
+function practiceLetter(letter){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Practice</h2>
+
+<h1>${letter}</h1>
+
+<canvas id="canvas" style="border:2px solid #ccc;background:white;width:320px;height:320px;"></canvas>
+
+<button onclick="showAlphabet()">Back</button>
+`
+
+initTraceCanvas()
+
+}
+
+function showWritingPractice(){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Writing Practice</h2>
+
+<button onclick="showAlphabet()">Choose Letter</button>
+
+<br>
+
+<button onclick="showHome()">Back</button>
+`
+
+}
+
 function runExercise(){
 
 let lesson = lessons[lessonIndex]
