@@ -4,9 +4,12 @@ let exerciseIndex = 0
 let retryQueue = []
 
 let drawing = false
-let lastX = 0
-let lastY = 0
 let strokeCount = 0
+
+let points = []
+
+let ctx
+let canvas
 
 
 
@@ -26,8 +29,8 @@ document.getElementById("screen").innerHTML=
 
 function startLesson(){
 
-exerciseIndex = 0
-retryQueue = []
+exerciseIndex=0
+retryQueue=[]
 
 runExercise()
 
@@ -51,7 +54,6 @@ return
 
 showCompletion()
 return
-
 }
 
 
@@ -121,7 +123,7 @@ let l = lessons[lessonIndex]
 let correct = l.letters[i]
 let sound = l.sounds[i]
 
-let options = [...l.letters,"ನ"]
+let options=[...l.letters,"ನ"]
 
 options.sort(()=>Math.random()-0.5)
 
@@ -170,6 +172,7 @@ document.getElementById("screen").innerHTML=
 
 `
 <h2>Correct</h2>
+
 <button onclick="runExercise()">Continue</button>
 `
 
@@ -182,6 +185,7 @@ document.getElementById("screen").innerHTML=
 `
 <h2>Incorrect</h2>
 <p>This will appear again later</p>
+
 <button onclick="runExercise()">Continue</button>
 `
 
@@ -196,6 +200,7 @@ function traceLetter(i){
 let l = lessons[lessonIndex]
 
 strokeCount = 0
+points = []
 
 document.getElementById("screen").innerHTML=
 
@@ -210,75 +215,34 @@ style="border:2px solid #ccc;background:white"></canvas>
 <button onclick="finishTrace()">Continue</button>
 `
 
-initCanvas()
-
-}
-
-
-
-function finishTrace(){
-
-if(strokeCount < 5){
-
-alert("Please trace the letter")
-
-return
-
-}
-
-runExercise()
-
-}
-
-
-
-function initCanvas(){
-
-let canvas=document.getElementById("canvas")
-let ctx=canvas.getContext("2d")
-
-ctx.lineWidth=8
-ctx.lineCap="round"
-ctx.strokeStyle="#000"
-
-
+canvas=document.getElementById("canvas")
+ctx=canvas.getContext("2d")
 
 canvas.addEventListener("pointerdown",startDraw)
-canvas.addEventListener("pointermove",draw)
+canvas.addEventListener("pointermove",addPoint)
 canvas.addEventListener("pointerup",endDraw)
-canvas.addEventListener("pointerleave",endDraw)
+
+requestAnimationFrame(drawLoop)
+
+}
+
+
 
 function startDraw(e){
 
 drawing=true
 
-let rect=canvas.getBoundingClientRect()
-
-lastX=e.clientX-rect.left
-lastY=e.clientY-rect.top
-
-ctx.beginPath()
-ctx.moveTo(lastX,lastY)
+points.push(getPos(e))
 
 }
 
 
 
-function draw(e){
+function addPoint(e){
 
 if(!drawing) return
 
-let rect=canvas.getBoundingClientRect()
-
-let x=e.clientX-rect.left
-let y=e.clientY-rect.top
-
-ctx.lineTo(x,y)
-ctx.stroke()
-
-lastX=x
-lastY=y
-
+points.push(getPos(e))
 strokeCount++
 
 }
@@ -290,6 +254,56 @@ function endDraw(){
 drawing=false
 
 }
+
+
+
+function getPos(e){
+
+let rect=canvas.getBoundingClientRect()
+
+return{
+x:e.clientX-rect.left,
+y:e.clientY-rect.top
+}
+
+}
+
+
+
+function drawLoop(){
+
+ctx.lineWidth=8
+ctx.lineCap="round"
+ctx.strokeStyle="#000"
+
+ctx.beginPath()
+
+for(let i=1;i<points.length;i++){
+
+ctx.moveTo(points[i-1].x,points[i-1].y)
+ctx.lineTo(points[i].x,points[i].y)
+
+}
+
+ctx.stroke()
+
+requestAnimationFrame(drawLoop)
+
+}
+
+
+
+function finishTrace(){
+
+if(strokeCount<5){
+
+alert("Please trace the letter")
+
+return
+
+}
+
+runExercise()
 
 }
 
