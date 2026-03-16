@@ -1,10 +1,10 @@
-let lessonIndex=0
-let exerciseIndex=0
-let streak=0
+let lessonIndex = 0
+let exerciseIndex = 0
+let streak = 0
 
 function showHome(){
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -22,15 +22,15 @@ document.getElementById("screen").innerHTML=
 
 function startLesson(){
 
-let lesson=lessons[lessonIndex]
+let lesson = lessons[lessonIndex]
 
-exerciseIndex=0
+exerciseIndex = 0
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
-<h2>Lesson ${lessonIndex+1}</h2>
+<h2>Lesson ${lessonIndex + 1}</h2>
 
 <h1>${lesson.letters.join(" ")}</h1>
 
@@ -46,19 +46,19 @@ document.getElementById("screen").innerHTML=
 
 function nextExercise(){
 
-if(exerciseIndex===0){
+if(exerciseIndex === 0){
 
 showQuiz()
 
 }
 
-else if(exerciseIndex===1){
+else if(exerciseIndex === 1){
 
 showMatch()
 
 }
 
-else if(exerciseIndex===2){
+else if(exerciseIndex === 2){
 
 showWriting()
 
@@ -68,9 +68,9 @@ else{
 
 lessonIndex++
 
-if(lessonIndex>=lessons.length){
+if(lessonIndex >= lessons.length){
 
-lessonIndex=0
+lessonIndex = 0
 
 }
 
@@ -84,19 +84,23 @@ exerciseIndex++
 
 function showQuiz(){
 
-let lesson=lessons[lessonIndex]
+let lesson = lessons[lessonIndex]
 
-document.getElementById("screen").innerHTML=
+let correct = lesson.letters[0]
+
+let options = [lesson.letters[0], lesson.letters[1], "ನ"]
+
+options.sort(() => Math.random() - 0.5)
+
+document.getElementById("screen").innerHTML =
 
 `
 
 <h2>Which letter is "${lesson.sounds[0]}"?</h2>
 
-<button onclick="checkAnswer('${lesson.letters[0]}')">${lesson.letters[0]}</button>
-
-<button onclick="checkAnswer('${lesson.letters[1]}')">${lesson.letters[1]}</button>
-
-<button onclick="checkAnswer('ನ')">ನ</button>
+<button onclick="checkAnswer('${options[0]}')">${options[0]}</button>
+<button onclick="checkAnswer('${options[1]}')">${options[1]}</button>
+<button onclick="checkAnswer('${options[2]}')">${options[2]}</button>
 
 `
 
@@ -104,13 +108,13 @@ document.getElementById("screen").innerHTML=
 
 function checkAnswer(letter){
 
-let correct=lessons[lessonIndex].letters[0]
+let correct = lessons[lessonIndex].letters[0]
 
-if(letter===correct){
+if(letter === correct){
 
 streak++
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -126,7 +130,7 @@ document.getElementById("screen").innerHTML=
 
 else{
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -142,9 +146,9 @@ document.getElementById("screen").innerHTML=
 
 function showMatch(){
 
-let lesson=lessons[lessonIndex]
+let lesson = lessons[lessonIndex]
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -162,7 +166,7 @@ function matchCorrect(){
 
 streak++
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -178,7 +182,7 @@ document.getElementById("screen").innerHTML=
 
 function matchWrong(){
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -192,9 +196,11 @@ document.getElementById("screen").innerHTML=
 
 function showWriting(){
 
-let lesson=lessons[lessonIndex]
+let lesson = lessons[lessonIndex]
 
-document.getElementById("screen").innerHTML=
+let letter = lesson.letters[0]
+
+document.getElementById("screen").innerHTML =
 
 `
 
@@ -209,31 +215,31 @@ style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
 
 `
 
-initCanvas(lesson.letters[0])
+initCanvas(letter)
 
 }
 
 function initCanvas(letter){
 
-let canvas=document.getElementById("canvas")
-let ctx=canvas.getContext("2d")
+let canvas = document.getElementById("canvas")
+let ctx = canvas.getContext("2d")
 
-ctx.font="200px Arial"
-ctx.fillStyle="#e3e3e3"
-ctx.textAlign="center"
-ctx.textBaseline="middle"
+ctx.font = "200px Arial"
+ctx.fillStyle = "#e3e3e3"
+ctx.textAlign = "center"
+ctx.textBaseline = "middle"
 
 ctx.fillText(letter,160,170)
 
-let drawing=false
-let lastX=0
-let lastY=0
+let drawing = false
+let lastX = 0
+let lastY = 0
 
 canvas.addEventListener("pointerdown",e=>{
 
-drawing=true
-lastX=e.offsetX
-lastY=e.offsetY
+drawing = true
+lastX = e.offsetX
+lastY = e.offsetY
 
 })
 
@@ -243,23 +249,23 @@ if(!drawing) return
 
 ctx.beginPath()
 
-ctx.lineWidth=8
-ctx.lineCap="round"
-ctx.strokeStyle="#2f80ed"
+ctx.lineWidth = 8
+ctx.lineCap = "round"
+ctx.strokeStyle = "#2f80ed"
 
 ctx.moveTo(lastX,lastY)
 ctx.lineTo(e.offsetX,e.offsetY)
 
 ctx.stroke()
 
-lastX=e.offsetX
-lastY=e.offsetY
+lastX = e.offsetX
+lastY = e.offsetY
 
 })
 
 canvas.addEventListener("pointerup",()=>{
 
-drawing=false
+drawing = false
 
 })
 
