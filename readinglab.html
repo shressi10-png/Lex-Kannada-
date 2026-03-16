@@ -1,39 +1,26 @@
 <h2>Reading Practice</h2>
 
-<div id="sentence"></div>
+<div style="font-size:28px;margin:30px">
 
-<button onclick="showMeaning()">Show Meaning</button>
+ಅವರು ನ್ಯಾಯಾಲಯಕ್ಕೆ ಹೋದರು
 
-<div id="meaning"></div>
+</div>
+
+<button onclick="showMeaning()">
+
+Show Translation
+
+</button>
+
+<p id="meaning"></p>
 
 <script>
 
-const data=[
-
-{
-k:"ನಾನು ಮನೆಗೆ ಹೋಗುತ್ತೇನೆ",
-e:"I go home"
-},
-
-{
-k:"ಅವರು ನ್ಯಾಯಾಲಯಕ್ಕೆ ಹೋದರು",
-e:"He went to court"
-},
-
-{
-k:"ಸಾಕ್ಷಿ ಮಾತನಾಡಿದರು",
-e:"The witness spoke"
-}
-
-]
-
-let i=0
-
-document.getElementById("sentence").innerHTML=data[i].k
-
 function showMeaning(){
 
-document.getElementById("meaning").innerHTML=data[i].e
+document.getElementById("meaning").innerHTML=
+
+"He went to court"
 
 }
 
