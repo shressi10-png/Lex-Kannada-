@@ -18,27 +18,32 @@ document.getElementById("screen").innerHTML=
 
 }
 
+let lessonIndex = 0
+let exerciseIndex = 0
+
 function startLesson(){
 
-let lesson=lessons[0]
+let lesson = lessons[lessonIndex]
 
-document.getElementById("screen").innerHTML=
+document.getElementById("screen").innerHTML =
 
 `
 
-<h2>Lesson 1</h2>
-
-<p>Learn these letters</p>
+<h2>Lesson ${lessonIndex+1}</h2>
 
 <h1>${lesson.letters.join(" ")}</h1>
 
-<p>Sound group: ${lesson.sound}</p>
+<p>Sounds: ${lesson.sounds.join(" / ")}</p>
 
-<p>Example: ${lesson.example}</p>
+<p>Example: ${lesson.examples[0]} (${lesson.meanings[0]})</p>
 
-<button onclick="quiz()">Next</button>
+<button onclick="nextExercise()">Start Exercise</button>
 
 `
+
+exerciseIndex = 0
+
+}
 
 }
 
