@@ -65,18 +65,56 @@ retryQueue = []
 runExercise()
 
 }
-
 function showAlphabet(){
 
 let letters=[
-"ಅ","ಆ","ಇ","ಈ","ಉ","ಊ",
-"ಕ","ಖ","ಗ","ಘ","ಙ",
-"ಚ","ಛ","ಜ","ಝ","ಞ",
-"ಟ","ಠ","ಡ","ಢ","ಣ",
-"ತ","ಥ","ದ","ಧ","ನ",
-"ಪ","ಫ","ಬ","ಭ","ಮ",
-"ಯ","ರ","ಲ","ವ",
-"ಶ","ಷ","ಸ","ಹ","ಳ"
+{l:"ಅ",p:"a"},
+{l:"ಆ",p:"aa"},
+{l:"ಇ",p:"i"},
+{l:"ಈ",p:"ee"},
+{l:"ಉ",p:"u"},
+{l:"ಊ",p:"oo"},
+
+{l:"ಕ",p:"ka"},
+{l:"ಖ",p:"kha"},
+{l:"ಗ",p:"ga"},
+{l:"ಘ",p:"gha"},
+{l:"ಙ",p:"nga"},
+
+{l:"ಚ",p:"cha"},
+{l:"ಛ",p:"chha"},
+{l:"ಜ",p:"ja"},
+{l:"ಝ",p:"jha"},
+{l:"ಞ",p:"nya"},
+
+{l:"ಟ",p:"ta"},
+{l:"ಠ",p:"tha"},
+{l:"ಡ",p:"da"},
+{l:"ಢ",p:"dha"},
+{l:"ಣ",p:"na"},
+
+{l:"ತ",p:"ta"},
+{l:"ಥ",p:"tha"},
+{l:"ದ",p:"da"},
+{l:"ಧ",p:"dha"},
+{l:"ನ",p:"na"},
+
+{l:"ಪ",p:"pa"},
+{l:"ಫ",p:"pha"},
+{l:"ಬ",p:"ba"},
+{l:"ಭ",p:"bha"},
+{l:"ಮ",p:"ma"},
+
+{l:"ಯ",p:"ya"},
+{l:"ರ",p:"ra"},
+{l:"ಲ",p:"la"},
+{l:"ವ",p:"va"},
+
+{l:"ಶ",p:"sha"},
+{l:"ಷ",p:"sha"},
+{l:"ಸ",p:"sa"},
+{l:"ಹ",p:"ha"},
+{l:"ಳ",p:"la"}
 ]
 
 let html="<h2>Kannada Alphabet</h2>"
@@ -84,7 +122,16 @@ html+="<div class='grid'>"
 
 letters.forEach(letter=>{
 
-html+=`<div class="letter" onclick="practiceLetter('${letter}')">${letter}</div>`
+html+=`
+
+<div class="letter" onclick="startLetterLesson('${letter.l}','${letter.p}')">
+
+<div>${letter.l}</div>
+<div style="font-size:14px;color:#555">${letter.p}</div>
+
+</div>
+
+`
 
 })
 
@@ -95,7 +142,6 @@ html+=`<button onclick="showHome()">Back</button>`
 document.getElementById("screen").innerHTML=html
 
 }
-
 function practiceLetter(letter){
 
 document.getElementById("screen").innerHTML=
