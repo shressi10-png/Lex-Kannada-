@@ -1,6 +1,13 @@
-let lessonIndex=0
-let exerciseIndex=0
-let streak=0
+let lessonIndex = localStorage.getItem("lessonIndex") ? parseInt(localStorage.getItem("lessonIndex")) : 0
+let streak = localStorage.getItem("streak") ? parseInt(localStorage.getItem("streak")) : 0
+let exerciseIndex = 0
+
+function saveProgress(){
+
+localStorage.setItem("lessonIndex",lessonIndex)
+localStorage.setItem("streak",streak)
+
+}
 
 function showHome(){
 
@@ -12,9 +19,11 @@ document.getElementById("screen").innerHTML=
 
 <p>Learn to read and write Kannada</p>
 
-<button onclick="startLesson()">Start Lesson</button>
+<button onclick="startLesson()">Continue Lesson</button>
 
 <p>🔥 Streak: ${streak}</p>
+
+<p>Lesson: ${lessonIndex+1} / ${lessons.length}</p>
 
 `
 
@@ -22,9 +31,9 @@ document.getElementById("screen").innerHTML=
 
 function startLesson(){
 
-let lesson=lessons[lessonIndex]
+let lesson = lessons[lessonIndex]
 
-exerciseIndex=0
+exerciseIndex = 0
 
 document.getElementById("screen").innerHTML=
 
@@ -35,6 +44,10 @@ document.getElementById("screen").innerHTML=
 <h1>${lesson.letters.join(" ")}</h1>
 
 <p>Sounds: ${lesson.sounds.join(" / ")}</p>
+
+<p>Hindi: ${lesson.hindi.join(" / ")}</p>
+
+<p>Tamil: ${lesson.tamil.join(" / ")}</p>
 
 <p>Example: ${lesson.examples[0]} (${lesson.meanings[0]})</p>
 
@@ -74,6 +87,8 @@ lessonIndex=0
 
 }
 
+saveProgress()
+
 showHome()
 
 }
@@ -84,9 +99,7 @@ exerciseIndex++
 
 function showQuiz(){
 
-let lesson=lessons[lessonIndex]
-
-let correct=lesson.letters[0]
+let lesson = lessons[lessonIndex]
 
 let options=[lesson.letters[0],lesson.letters[1],"ನ"]
 
@@ -99,7 +112,9 @@ document.getElementById("screen").innerHTML=
 <h2>Which letter is "${lesson.sounds[0]}"?</h2>
 
 <button onclick="checkAnswer('${options[0]}')">${options[0]}</button>
+
 <button onclick="checkAnswer('${options[1]}')">${options[1]}</button>
+
 <button onclick="checkAnswer('${options[2]}')">${options[2]}</button>
 
 `
@@ -113,6 +128,8 @@ let correct=lessons[lessonIndex].letters[0]
 if(letter===correct){
 
 streak++
+
+saveProgress()
 
 document.getElementById("screen").innerHTML=
 
@@ -166,6 +183,8 @@ function matchCorrect(){
 
 streak++
 
+saveProgress()
+
 document.getElementById("screen").innerHTML=
 
 `
@@ -196,9 +215,9 @@ document.getElementById("screen").innerHTML=
 
 function showWriting(){
 
-let lesson=lessons[lessonIndex]
+let lesson = lessons[lessonIndex]
 
-let letter=lesson.letters[0]
+let letter = lesson.letters[0]
 
 document.getElementById("screen").innerHTML=
 
