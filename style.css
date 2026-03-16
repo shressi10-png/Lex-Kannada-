@@ -2,7 +2,7 @@ body{
 
 font-family:-apple-system,BlinkMacSystemFont,Arial;
 margin:0;
-background:#f6f7fb;
+background:#f5f7fb;
 text-align:center;
 
 }
@@ -23,7 +23,7 @@ margin-top:30px;
 button{
 
 width:90%;
-max-width:350px;
+max-width:360px;
 padding:18px;
 margin:12px auto;
 display:block;
