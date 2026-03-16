@@ -4,12 +4,9 @@ let exerciseIndex = 0
 let retryQueue = []
 
 let drawing = false
+let lastX = 0
+let lastY = 0
 let strokeCount = 0
-
-let points = []
-
-let ctx
-let canvas
 
 
 
@@ -29,8 +26,8 @@ document.getElementById("screen").innerHTML=
 
 function startLesson(){
 
-exerciseIndex=0
-retryQueue=[]
+exerciseIndex = 0
+retryQueue = []
 
 runExercise()
 
@@ -55,6 +52,7 @@ return
 showCompletion()
 return
 }
+
 
 
 switch(exerciseIndex){
@@ -200,7 +198,6 @@ function traceLetter(i){
 let l = lessons[lessonIndex]
 
 strokeCount = 0
-points = []
 
 document.getElementById("screen").innerHTML=
 
@@ -210,84 +207,74 @@ document.getElementById("screen").innerHTML=
 <h1>${l.letters[i]}</h1>
 
 <canvas id="canvas" width="320" height="320"
-style="border:2px solid #ccc;background:white"></canvas>
+style="border:2px solid #ccc;background:white;touch-action:none"></canvas>
 
 <button onclick="finishTrace()">Continue</button>
 `
 
-canvas=document.getElementById("canvas")
-ctx=canvas.getContext("2d")
-
-canvas.addEventListener("pointerdown",startDraw)
-canvas.addEventListener("pointermove",addPoint)
-canvas.addEventListener("pointerup",endDraw)
-
-requestAnimationFrame(drawLoop)
-
-}
-
-
-
-function startDraw(e){
-
-drawing=true
-
-points.push(getPos(e))
-
-}
-
-
-
-function addPoint(e){
-
-if(!drawing) return
-
-points.push(getPos(e))
-strokeCount++
-
-}
-
-
-
-function endDraw(){
-
-drawing=false
-
-}
-
-
-
-function getPos(e){
-
-let rect=canvas.getBoundingClientRect()
-
-return{
-x:e.clientX-rect.left,
-y:e.clientY-rect.top
-}
-
-}
-
-
-
-function drawLoop(){
+let canvas=document.getElementById("canvas")
+let ctx=canvas.getContext("2d")
 
 ctx.lineWidth=8
 ctx.lineCap="round"
 ctx.strokeStyle="#000"
 
+let drawing=false
+let lastX=0
+let lastY=0
+
+
+
+canvas.addEventListener("pointerdown",(e)=>{
+
+drawing=true
+
+let rect=canvas.getBoundingClientRect()
+
+lastX=e.clientX-rect.left
+lastY=e.clientY-rect.top
+
 ctx.beginPath()
+ctx.moveTo(lastX,lastY)
 
-for(let i=1;i<points.length;i++){
+})
 
-ctx.moveTo(points[i-1].x,points[i-1].y)
-ctx.lineTo(points[i].x,points[i].y)
 
-}
 
+canvas.addEventListener("pointermove",(e)=>{
+
+if(!drawing) return
+
+let rect=canvas.getBoundingClientRect()
+
+let x=e.clientX-rect.left
+let y=e.clientY-rect.top
+
+ctx.lineTo(x,y)
 ctx.stroke()
 
-requestAnimationFrame(drawLoop)
+lastX=x
+lastY=y
+
+strokeCount++
+
+})
+
+
+
+canvas.addEventListener("pointerup",()=>{
+
+drawing=false
+
+})
+
+
+
+canvas.addEventListener("pointerleave",()=>{
+
+drawing=false
+
+})
 
 }
 
@@ -338,11 +325,15 @@ function showBreakdown(w,m,b,p){
 document.getElementById("screen").innerHTML=
 
 `
+<h2>Word</h2>
+
 <h1>${w}</h1>
 
-<p>${m}</p>
+<p><b>Meaning:</b> ${m}</p>
 
-<h3>${b}</h3>
+<h3>Breakdown</h3>
+
+<p>${b}</p>
 
 <button onclick="showPronunciation('${w}','${m}','${b}','${p}')">
 Show pronunciation
@@ -358,13 +349,17 @@ function showPronunciation(w,m,b,p){
 document.getElementById("screen").innerHTML=
 
 `
+<h2>Word</h2>
+
 <h1>${w}</h1>
 
-<p>${m}</p>
+<p><b>Meaning:</b> ${m}</p>
 
 <p>${b}</p>
 
-<h3>${p}</h3>
+<h3>Pronunciation</h3>
+
+<p>${p}</p>
 
 <button onclick="runExercise()">Finish Lesson</button>
 `
