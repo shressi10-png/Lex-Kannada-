@@ -85,21 +85,19 @@ document.getElementById("screen").innerHTML=
 
 function nextExercise(){
 
-let lesson = lessons[lessonIndex]
-
-if(exerciseIndex === 0){
+if(exerciseIndex===0){
 
 showQuiz()
 
 }
 
-else if(exerciseIndex === 1){
+else if(exerciseIndex===1){
 
 showMatch()
 
 }
 
-else if(exerciseIndex === 2){
+else if(exerciseIndex===2){
 
 showWriting()
 
@@ -115,7 +113,6 @@ showHome()
 exerciseIndex++
 
 }
-
 function wrong(){
 
 document.getElementById("screen").innerHTML=
