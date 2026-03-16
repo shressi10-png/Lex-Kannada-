@@ -1,29 +1,40 @@
-<h2>Vocabulary</h2>
+<h2>Vocabulary Card</h2>
 
-<div id="word"></div>
+<div id="card"
+style="
+font-size:40px;
+margin:40px;
+">
 
-<button onclick="showMeaning()">Show Meaning</button>
+ನ್ಯಾಯಾಲಯ
 
-<div id="meaning"></div>
+</div>
+
+<button onclick="flip()">
+
+Show Meaning
+
+</button>
 
 <script>
 
-const vocab=[
+let flipped=false
 
-{k:"ನ್ಯಾಯಾಲಯ",e:"court"},
-{k:"ಅರ್ಜಿದಾರ",e:"petitioner"},
-{k:"ಸಾಕ್ಷಿ",e:"witness"},
-{k:"ತೀರ್ಪು",e:"judgment"}
+function flip(){
 
-]
+if(!flipped){
 
-let i=0
+document.getElementById("card").innerHTML="Court"
+flipped=true
 
-document.getElementById("word").innerHTML=vocab[i].k
+}
 
-function showMeaning(){
+else{
 
-document.getElementById("meaning").innerHTML=vocab[i].e
+document.getElementById("card").innerHTML="ನ್ಯಾಯಾಲಯ"
+flipped=false
+
+}
 
 }
 
