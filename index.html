@@ -2,39 +2,48 @@
 <html>
 
 <head>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>LexKannada</title>
 
 <style>
 
 body{
 font-family:Arial;
+background:#f5f7fb;
 text-align:center;
 padding:30px;
-background:#f4f6f8;
-}
-
-button{
-display:block;
-width:80%;
-margin:15px auto;
-padding:15px;
-font-size:18px;
-border:none;
-border-radius:10px;
-background:#2c7be5;
-color:white;
 }
 
 h1{
-margin-bottom:30px;
+font-size:40px;
+margin-bottom:10px;
 }
 
-.progress{
+.subtitle{
+color:#666;
+margin-bottom:40px;
+}
+
+.card{
 background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:30px;
+padding:20px;
+margin:15px auto;
+width:85%;
+border-radius:15px;
+font-size:20px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+button{
+width:100%;
+padding:20px;
+border:none;
+background:#2f80ed;
+color:white;
+font-size:20px;
+border-radius:12px;
 }
 
 </style>
@@ -45,29 +54,51 @@ margin-bottom:30px;
 
 <h1>LexKannada</h1>
 
-<div class="progress">
+<p class="subtitle">
 
-<p>Lesson: 1</p>
-<p>Letters Learned: 0 / 49</p>
-<p>Words Learned: 0</p>
+Learn to read and write Kannada
+
+</p>
+
+<div class="card">
+
+<button onclick="location.href='learn.html'">
+
+Start Learning
+
+</button>
 
 </div>
 
-<button onclick="location.href='learn.html'">
-Start Lesson
-</button>
+<div class="card">
 
 <button onclick="location.href='writinglab.html'">
+
 Practice Writing
+
 </button>
+
+</div>
+
+<div class="card">
 
 <button onclick="location.href='readinglab.html'">
+
 Reading Practice
+
 </button>
 
+</div>
+
+<div class="card">
+
 <button onclick="location.href='vocab.html'">
+
 Vocabulary
+
 </button>
+
+</div>
 
 </body>
 
