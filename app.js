@@ -158,24 +158,25 @@ initCanvas()
 
 function initCanvas(){
 
-let canvas=document.getElementById("c")
+let canvas=document.getElementById("canvas")
 let ctx=canvas.getContext("2d")
 
 ctx.font="200px Arial"
-ctx.fillStyle="#e0e0e0"
+ctx.fillStyle="#e3e3e3"
 ctx.textAlign="center"
 ctx.textBaseline="middle"
 
 ctx.fillText("ಕ",160,170)
 
 let drawing=false
+let lastX=0
+let lastY=0
 
 canvas.addEventListener("pointerdown",e=>{
 
 drawing=true
-
-ctx.beginPath()
-ctx.moveTo(e.offsetX,e.offsetY)
+lastX=e.offsetX
+lastY=e.offsetY
 
 })
 
@@ -183,12 +184,19 @@ canvas.addEventListener("pointermove",e=>{
 
 if(!drawing) return
 
+ctx.beginPath()
+
 ctx.lineWidth=8
 ctx.lineCap="round"
 ctx.strokeStyle="#2f80ed"
 
+ctx.moveTo(lastX,lastY)
 ctx.lineTo(e.offsetX,e.offsetY)
+
 ctx.stroke()
+
+lastX=e.offsetX
+lastY=e.offsetY
 
 })
 
@@ -199,5 +207,4 @@ drawing=false
 })
 
 }
-
 showHome()
