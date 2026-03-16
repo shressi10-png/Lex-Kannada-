@@ -4,7 +4,10 @@ let exerciseIndex = 0
 let retryQueue = []
 
 let strokeCount = 0
-let hasDrawn = false
+let drawing = false
+let lastX = 0
+let lastY = 0
+
 
 
 function showHome(){
@@ -20,6 +23,7 @@ document.getElementById("screen").innerHTML=
 }
 
 
+
 function startLesson(){
 
 exerciseIndex = 0
@@ -28,6 +32,7 @@ retryQueue = []
 runExercise()
 
 }
+
 
 
 function runExercise(){
@@ -48,6 +53,7 @@ return
 showCompletion()
 return
 }
+
 
 
 switch(exerciseIndex){
@@ -120,7 +126,6 @@ let options = [...l.letters,"ನ"]
 
 options.sort(()=>Math.random()-0.5)
 
-
 document.getElementById("screen").innerHTML=
 
 `
@@ -152,7 +157,6 @@ document.getElementById("screen").innerHTML=
 <p>Which letter makes the sound <b>${sound}</b>?</p>
 
 ${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}',()=>matchExercise())">${o}</button>`).join("")}
-
 `
 
 }
@@ -195,8 +199,8 @@ function traceLetter(i){
 
 let l = lessons[lessonIndex]
 
-hasDrawn = false
 strokeCount = 0
+drawing = false
 
 document.getElementById("screen").innerHTML=
 
@@ -219,7 +223,7 @@ initCanvas(l.letters[i])
 
 function finishTrace(){
 
-if(strokeCount<5){
+if(strokeCount < 10){
 
 alert("Please trace the letter properly")
 
@@ -245,7 +249,7 @@ document.getElementById("screen").innerHTML=
 
 <h1>${wordData.word}</h1>
 
-<p>Meaning: ${wordData.meaning}</p>
+<p><b>Meaning:</b> ${wordData.meaning}</p>
 
 <button onclick="showBreakdown('${wordData.word}','${wordData.meaning}','${wordData.breakdown}','${wordData.phonetic}')">
 Show breakdown
@@ -261,11 +265,15 @@ function showBreakdown(w,m,b,p){
 document.getElementById("screen").innerHTML=
 
 `
+<h2>Word</h2>
+
 <h1>${w}</h1>
 
-<p>${m}</p>
+<p><b>Meaning:</b> ${m}</p>
 
-<h3>${b}</h3>
+<h3>Breakdown</h3>
+
+<p>${b}</p>
 
 <button onclick="showPronunciation('${w}','${m}','${b}','${p}')">
 Show pronunciation
@@ -281,13 +289,17 @@ function showPronunciation(w,m,b,p){
 document.getElementById("screen").innerHTML=
 
 `
+<h2>Word</h2>
+
 <h1>${w}</h1>
 
-<p>${m}</p>
+<p><b>Meaning:</b> ${m}</p>
 
 <p>${b}</p>
 
-<h3>${p}</h3>
+<h3>Pronunciation</h3>
+
+<p>${p}</p>
 
 <button onclick="runExercise()">Finish Lesson</button>
 `
@@ -342,28 +354,48 @@ ctx.textBaseline="middle"
 
 ctx.fillText(letter,160,170)
 
-let drawing=false
+
 
 canvas.addEventListener("pointerdown",e=>{
 
 drawing=true
-hasDrawn=true
+
+let rect=canvas.getBoundingClientRect()
+
+lastX=e.clientX-rect.left
+lastY=e.clientY-rect.top
 
 })
+
+
 
 canvas.addEventListener("pointermove",e=>{
 
 if(!drawing)return
 
-strokeCount++
+let rect=canvas.getBoundingClientRect()
+
+let x=e.clientX-rect.left
+let y=e.clientY-rect.top
+
+ctx.beginPath()
+
+ctx.moveTo(lastX,lastY)
+ctx.lineTo(x,y)
 
 ctx.lineWidth=8
 ctx.lineCap="round"
 
-ctx.lineTo(e.offsetX,e.offsetY)
 ctx.stroke()
 
+lastX=x
+lastY=y
+
+strokeCount++
+
 })
+
+
 
 canvas.addEventListener("pointerup",()=>{
 
