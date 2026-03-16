@@ -92,7 +92,7 @@ document.getElementById("screen").innerHTML=
 
 }
 
-function showWriting(){
+ffunction showWriting(){
 
 document.getElementById("screen").innerHTML=
 
@@ -100,11 +100,18 @@ document.getElementById("screen").innerHTML=
 
 <h2>Trace the letter</h2>
 
-<h1 style="color:#ccc">ಕ</h1>
+<p>Sound: ka</p>
 
-<canvas id="c" width="300" height="300"
-style="border:2px solid #ccc;border-radius:10px"></canvas>
+<canvas id="c" width="320" height="320"
+style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
 
+<button onclick="showHome()">Finish</button>
+
+`
+
+initCanvas()
+
+}
 `
 
 initCanvas()
