@@ -15,13 +15,17 @@ function showHome(){
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Welcome</h2>
+<h1>LexKannada</h1>
 
-<button onclick="startLesson()">Continue</button>
+<button onclick="startLesson()">Continue Lesson</button>
 
-<br><br>
+<br>
 
-<button onclick="showLessons()">Choose Lesson</button>
+<button onclick="showAlphabet()">Alphabet Map</button>
+
+<br>
+
+<button onclick="showWritingPractice()">Writing Practice</button>
 `
 
 }
