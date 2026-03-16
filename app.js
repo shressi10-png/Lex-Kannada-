@@ -264,23 +264,30 @@ function showWordBreakdown(){
 let lesson = lessons[lessonIndex]
 
 let word = lesson.examples[0]
+let meaning = lesson.meanings[0]
 
-let letters = word.split("")
+let breakdown = "ಕಾ + ನೂ + ನು"
+let phonetic = "kaa + noo + nu"
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Word structure</h2>
+<h2>Word</h2>
 
 <h1>${word}</h1>
 
-<p>${letters.join(" + ")}</p>
+<p><b>Meaning:</b> ${meaning}</p>
+
+<h3>Breakdown</h3>
+<p style="font-size:22px">${breakdown}</p>
+
+<h3>Pronunciation</h3>
+<p style="font-size:22px">${phonetic}</p>
 
 <button onclick="runExercise()">Finish Lesson</button>
 `
 
 }
-
 function initCanvas(letter){
 
 let canvas=document.getElementById("canvas")
