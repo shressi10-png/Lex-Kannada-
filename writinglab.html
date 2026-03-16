@@ -1,13 +1,27 @@
 <h2>Trace the letter</h2>
 
-<h1 style="font-size:80px">
+<h1 style="font-size:80px;color:#ccc">
 
 ಕ
 
 </h1>
 
-<canvas id="c" width="300" height="300"
-style="border:1px solid black;background:white"></canvas>
+<p>
+
+Sound: ka
+
+</p>
+
+<p>
+
+Example word: ಕಾನೂನು (law)
+
+</p>
+
+<canvas id="canvas" width="300" height="300"
+style="border:2px solid #ccc;border-radius:10px">
+
+</canvas>
 
 <br><br>
 
@@ -19,14 +33,25 @@ Clear
 
 <script>
 
-let canvas=document.getElementById("c")
+let canvas=document.getElementById("canvas")
 let ctx=canvas.getContext("2d")
 
 let drawing=false
 
-canvas.addEventListener("touchstart",()=>drawing=true)
+canvas.addEventListener("touchstart",e=>{
 
-canvas.addEventListener("touchend",()=>drawing=false)
+drawing=true
+
+let rect=canvas.getBoundingClientRect()
+
+ctx.beginPath()
+
+ctx.moveTo(
+e.touches[0].clientX-rect.left,
+e.touches[0].clientY-rect.top
+)
+
+})
 
 canvas.addEventListener("touchmove",e=>{
 
@@ -34,18 +59,26 @@ if(!drawing) return
 
 let rect=canvas.getBoundingClientRect()
 
-let x=e.touches[0].clientX-rect.left
-let y=e.touches[0].clientY-rect.top
-
 ctx.lineWidth=6
-ctx.lineTo(x,y)
+
+ctx.lineTo(
+e.touches[0].clientX-rect.left,
+e.touches[0].clientY-rect.top
+)
+
 ctx.stroke()
+
+})
+
+canvas.addEventListener("touchend",()=>{
+
+drawing=false
 
 })
 
 function clearCanvas(){
 
-ctx.clearRect(0,0,300,300)
+ctx.clearRect(0,0,canvas.width,canvas.height)
 
 }
 
