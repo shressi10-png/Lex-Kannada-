@@ -1,4 +1,4 @@
-const lessons = [
+const lessons=[
 
 {
 letters:["ಕ","ಗ"],
