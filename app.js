@@ -2,6 +2,8 @@ let lessonIndex = localStorage.getItem("lessonIndex") ? parseInt(localStorage.ge
 let streak = localStorage.getItem("streak") ? parseInt(localStorage.getItem("streak")) : 0
 
 let exerciseIndex = 0
+let retryQueue = []
+let hasDrawn = false
 
 function saveProgress(){
 localStorage.setItem("lessonIndex",lessonIndex)
@@ -29,6 +31,7 @@ document.getElementById("screen").innerHTML=
 function startLesson(){
 
 exerciseIndex = 0
+retryQueue = []
 
 runExercise()
 
@@ -37,6 +40,15 @@ runExercise()
 function runExercise(){
 
 let lesson = lessons[lessonIndex]
+
+if(retryQueue.length>0){
+
+let retry = retryQueue.shift()
+
+retry()
+
+return
+}
 
 if(exerciseIndex===0){
 
@@ -95,8 +107,6 @@ document.getElementById("screen").innerHTML=
 `
 <h2>✓ Lesson Complete</h2>
 
-<p>Letters learned:</p>
-
 <h1>${lesson.letters.join(" ")}</h1>
 
 <button onclick="showHome()">Next Lesson</button>
@@ -147,14 +157,14 @@ document.getElementById("screen").innerHTML=
 `
 <h2>Which letter is "${sound}"?</h2>
 
-<button onclick="checkAnswer('${options[0]}','${correctLetter}')">${options[0]}</button>
-<button onclick="checkAnswer('${options[1]}','${correctLetter}')">${options[1]}</button>
-<button onclick="checkAnswer('${options[2]}','${correctLetter}')">${options[2]}</button>
+<button onclick="checkAnswer('${options[0]}','${correctLetter}',()=>quizLetter(${index}))">${options[0]}</button>
+<button onclick="checkAnswer('${options[1]}','${correctLetter}',()=>quizLetter(${index}))">${options[1]}</button>
+<button onclick="checkAnswer('${options[2]}','${correctLetter}',()=>quizLetter(${index}))">${options[2]}</button>
 `
 
 }
 
-function checkAnswer(choice,correct){
+function checkAnswer(choice,correct,retryFn){
 
 if(choice===correct){
 
@@ -175,12 +185,16 @@ document.getElementById("screen").innerHTML=
 
 else{
 
+retryQueue.push(retryFn)
+
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Try again</h2>
+<h2>Incorrect</h2>
 
-<button onclick="runExercise()">Retry</button>
+<p>This exercise will appear again later.</p>
+
+<button onclick="runExercise()">Continue</button>
 `
 
 }
@@ -211,6 +225,8 @@ let lesson = lessons[lessonIndex]
 let letter = lesson.letters[index]
 let sound = lesson.sounds[index]
 
+hasDrawn = false
+
 document.getElementById("screen").innerHTML=
 
 `
@@ -223,10 +239,23 @@ document.getElementById("screen").innerHTML=
 <canvas id="canvas" width="320" height="320"
 style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
 
-<button onclick="runExercise()">Continue</button>
+<button onclick="finishTrace(${index})">Continue</button>
 `
 
 initCanvas(letter)
+
+}
+
+function finishTrace(index){
+
+if(!hasDrawn){
+
+alert("Please trace the letter before continuing.")
+
+return
+}
+
+runExercise()
 
 }
 
@@ -271,6 +300,7 @@ let lastY=0
 canvas.addEventListener("pointerdown",e=>{
 
 drawing=true
+hasDrawn=true
 lastX=e.offsetX
 lastY=e.offsetY
 
