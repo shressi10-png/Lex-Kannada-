@@ -1,14 +1,11 @@
-let lessonIndex = localStorage.getItem("lessonIndex") ? parseInt(localStorage.getItem("lessonIndex")) : 0
-let streak = localStorage.getItem("streak") ? parseInt(localStorage.getItem("streak")) : 0
-
+let lessonIndex = 0
 let exerciseIndex = 0
+
 let retryQueue = []
+
+let strokeCount = 0
 let hasDrawn = false
 
-function saveProgress(){
-localStorage.setItem("lessonIndex",lessonIndex)
-localStorage.setItem("streak",streak)
-}
 
 function showHome(){
 
@@ -17,16 +14,11 @@ document.getElementById("screen").innerHTML=
 `
 <h2>Welcome</h2>
 
-<p>Learn to read and write Kannada</p>
-
-<button onclick="startLesson()">Continue Lesson</button>
-
-<p>🔥 Streak: ${streak}</p>
-
-<p>Lesson: ${lessonIndex+1} / ${lessons.length}</p>
+<button onclick="startLesson()">Start Lesson</button>
 `
 
 }
+
 
 function startLesson(){
 
@@ -37,162 +29,158 @@ runExercise()
 
 }
 
+
 function runExercise(){
 
 let lesson = lessons[lessonIndex]
 
-if(exerciseIndex>6 && retryQueue.length>0){
+
+if(exerciseIndex>6){
+
+if(retryQueue.length>0){
 
 let retry = retryQueue.shift()
-
 retry()
+return
 
+}
+
+showCompletion()
 return
 }
 
-if(exerciseIndex===0){
 
+switch(exerciseIndex){
+
+case 0:
 showLetters()
+break
 
-}
-
-else if(exerciseIndex===1){
-
+case 1:
 quizLetter(0)
+break
 
-}
+case 2:
+matchExercise()
+break
 
-else if(exerciseIndex===2){
+case 3:
+traceLetter(0)
+break
 
-showMatch()
+case 4:
+traceLetter(1)
+break
 
-}
-
-else if(exerciseIndex===3){
-
-showWriting(0)
-
-}
-
-else if(exerciseIndex===4){
-
-showWriting(1)
-
-}
-
-else if(exerciseIndex===5){
-
+case 5:
 quizLetter(1)
+break
 
-}
+case 6:
+showWord()
+break
 
-else if(exerciseIndex===6){
-
-showWordBreakdown()
-
-}
-
-else{
-
-lessonIndex++
-
-if(lessonIndex>=lessons.length){
-lessonIndex=0
-}
-
-saveProgress()
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>✓ Lesson Complete</h2>
-
-<h1>${lesson.letters.join(" ")}</h1>
-
-<button onclick="showHome()">Next Lesson</button>
-`
-
-return
 }
 
 exerciseIndex++
 
 }
 
+
+
 function showLetters(){
 
-let lesson = lessons[lessonIndex]
+let l = lessons[lessonIndex]
 
 document.getElementById("screen").innerHTML=
 
 `
 <h2>Look at these letters</h2>
 
-<h1 style="font-size:70px">${lesson.letters.join("   ")}</h1>
+<h1>${l.letters.join(" ")}</h1>
 
-<p>Sounds: ${lesson.sounds.join(" / ")}</p>
-
-<p>Hindi: ${lesson.hindi.join(" / ")}</p>
-
-<p>Tamil: ${lesson.tamil.join(" / ")}</p>
+<p>Hindi: ${l.hindi.join(" / ")}</p>
+<p>Tamil: ${l.tamil.join(" / ")}</p>
 
 <button onclick="runExercise()">Continue</button>
 `
 
 }
 
-function quizLetter(index){
 
-let lesson = lessons[lessonIndex]
 
-let correctLetter = lesson.letters[index]
-let sound = lesson.sounds[index]
+function quizLetter(i){
 
-let options=[lesson.letters[0],lesson.letters[1],"ನ"]
+let l = lessons[lessonIndex]
+
+let correct = l.letters[i]
+let sound = l.sounds[i]
+
+let options = [...l.letters,"ನ"]
 
 options.sort(()=>Math.random()-0.5)
+
 
 document.getElementById("screen").innerHTML=
 
 `
 <h2>Which letter is "${sound}"?</h2>
 
-<button onclick="checkAnswer('${options[0]}','${correctLetter}',()=>quizLetter(${index}))">${options[0]}</button>
-<button onclick="checkAnswer('${options[1]}','${correctLetter}',()=>quizLetter(${index}))">${options[1]}</button>
-<button onclick="checkAnswer('${options[2]}','${correctLetter}',()=>quizLetter(${index}))">${options[2]}</button>
+${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}',()=>quizLetter(${i}))">${o}</button>`).join("")}
 `
 
 }
 
-function checkAnswer(choice,correct,retryFn){
 
-if(choice===correct){
 
-streak++
-saveProgress()
+function matchExercise(){
+
+let l = lessons[lessonIndex]
+
+let correct = l.letters[1]
+let sound = l.sounds[1]
+
+let options=[...l.letters,"ನ"]
+
+options.sort(()=>Math.random()-0.5)
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>✓ Correct</h2>
+<h2>Match the sound</h2>
 
-<p>🔥 Streak: ${streak}</p>
+<p>Which letter makes the sound <b>${sound}</b>?</p>
 
-<button onclick="runExercise()">Continue</button>
+${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}',()=>matchExercise())">${o}</button>`).join("")}
+
 `
 
 }
 
-else{
 
-retryQueue.push(retryFn)
+
+function checkAnswer(choice,correct,retry){
+
+if(choice===correct){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Correct</h2>
+
+<button onclick="runExercise()">Continue</button>
+`
+
+}else{
+
+retryQueue.push(retry)
 
 document.getElementById("screen").innerHTML=
 
 `
 <h2>Incorrect</h2>
 
-<p>This exercise will appear again at the end.</p>
+<p>This will appear again later</p>
 
 <button onclick="runExercise()">Continue</button>
 `
@@ -201,56 +189,39 @@ document.getElementById("screen").innerHTML=
 
 }
 
-function showMatch(){
 
-let lesson = lessons[lessonIndex]
 
-document.getElementById("screen").innerHTML=
+function traceLetter(i){
 
-`
-<h2>Match the letters</h2>
-
-<p>${lesson.letters[0]} → ${lesson.sounds[0]}</p>
-<p>${lesson.letters[1]} → ${lesson.sounds[1]}</p>
-
-<button onclick="runExercise()">Continue</button>
-`
-
-}
-
-function showWriting(index){
-
-let lesson = lessons[lessonIndex]
-
-let letter = lesson.letters[index]
-let sound = lesson.sounds[index]
+let l = lessons[lessonIndex]
 
 hasDrawn = false
+strokeCount = 0
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Trace the letter</h2>
+<h2>Trace</h2>
 
-<h1 style="font-size:70px">${letter}</h1>
-
-<p>Sound: ${sound}</p>
+<h1>${l.letters[i]}</h1>
 
 <canvas id="canvas" width="320" height="320"
-style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
+style="border:2px solid #ccc;background:white"></canvas>
 
 <button onclick="finishTrace()">Continue</button>
 `
 
-initCanvas(letter)
+initCanvas(l.letters[i])
 
 }
 
+
+
 function finishTrace(){
 
-if(!hasDrawn){
+if(strokeCount<5){
 
-alert("Please trace the letter before continuing.")
+alert("Please trace the letter properly")
 
 return
 }
@@ -259,76 +230,105 @@ runExercise()
 
 }
 
-function showWordBreakdown(){
+
+
+function showWord(){
 
 let lesson = lessons[lessonIndex]
 
-let word = lesson.examples[0]
-let meaning = lesson.meanings[0]
-let breakdown = lesson.breakdown[0]
-let phonetic = lesson.phonetic[0]
+let wordData = lesson.examples[Math.floor(Math.random()*lesson.examples.length)]
 
 document.getElementById("screen").innerHTML=
 
 `
 <h2>Word</h2>
 
-<h1>${word}</h1>
+<h1>${wordData.word}</h1>
 
-<p><b>Meaning:</b> ${meaning}</p>
+<p>Meaning: ${wordData.meaning}</p>
 
-<button onclick="showBreakdown('${word}','${meaning}','${breakdown}','${phonetic}')">
+<button onclick="showBreakdown('${wordData.word}','${wordData.meaning}','${wordData.breakdown}','${wordData.phonetic}')">
 Show breakdown
 </button>
 `
 
 }
 
-function showBreakdown(word,meaning,breakdown,phonetic){
+
+
+function showBreakdown(w,m,b,p){
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Word</h2>
+<h1>${w}</h1>
 
-<h1>${word}</h1>
+<p>${m}</p>
 
-<p><b>Meaning:</b> ${meaning}</p>
+<h3>${b}</h3>
 
-<h3>Breakdown</h3>
-
-<p style="font-size:22px">${breakdown}</p>
-
-<button onclick="showPronunciation('${word}','${meaning}','${breakdown}','${phonetic}')">
+<button onclick="showPronunciation('${w}','${m}','${b}','${p}')">
 Show pronunciation
 </button>
 `
 
 }
 
-function showPronunciation(word,meaning,breakdown,phonetic){
+
+
+function showPronunciation(w,m,b,p){
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Word</h2>
+<h1>${w}</h1>
 
-<h1>${word}</h1>
+<p>${m}</p>
 
-<p><b>Meaning:</b> ${meaning}</p>
+<p>${b}</p>
 
-<h3>Breakdown</h3>
-
-<p style="font-size:22px">${breakdown}</p>
-
-<h3>Pronunciation</h3>
-
-<p style="font-size:22px">${phonetic}</p>
+<h3>${p}</h3>
 
 <button onclick="runExercise()">Finish Lesson</button>
 `
 
 }
+
+
+
+function showCompletion(){
+
+let l = lessons[lessonIndex]
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Lesson Complete</h2>
+
+<h1>${l.letters.join(" ")}</h1>
+
+<button onclick="nextLesson()">Next Lesson</button>
+`
+
+}
+
+
+
+function nextLesson(){
+
+lessonIndex++
+
+if(lessonIndex>=lessons.length){
+
+lessonIndex=0
+
+}
+
+showHome()
+
+}
+
+
 
 function initCanvas(letter){
 
@@ -343,35 +343,25 @@ ctx.textBaseline="middle"
 ctx.fillText(letter,160,170)
 
 let drawing=false
-let lastX=0
-let lastY=0
 
 canvas.addEventListener("pointerdown",e=>{
 
 drawing=true
 hasDrawn=true
-lastX=e.offsetX
-lastY=e.offsetY
 
 })
 
 canvas.addEventListener("pointermove",e=>{
 
-if(!drawing) return
+if(!drawing)return
 
-ctx.beginPath()
+strokeCount++
 
 ctx.lineWidth=8
 ctx.lineCap="round"
-ctx.strokeStyle="#2f80ed"
 
-ctx.moveTo(lastX,lastY)
 ctx.lineTo(e.offsetX,e.offsetY)
-
 ctx.stroke()
-
-lastX=e.offsetX
-lastY=e.offsetY
 
 })
 
@@ -382,5 +372,7 @@ drawing=false
 })
 
 }
+
+
 
 showHome()
