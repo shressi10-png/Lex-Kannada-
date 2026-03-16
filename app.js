@@ -66,7 +66,35 @@ runExercise()
 
 }
 
+function showAlphabet(){
 
+let letters=[
+"ಅ","ಆ","ಇ","ಈ","ಉ","ಊ",
+"ಕ","ಖ","ಗ","ಘ","ಙ",
+"ಚ","ಛ","ಜ","ಝ","ಞ",
+"ಟ","ಠ","ಡ","ಢ","ಣ",
+"ತ","ಥ","ದ","ಧ","ನ",
+"ಪ","ಫ","ಬ","ಭ","ಮ",
+"ಯ","ರ","ಲ","ವ",
+"ಶ","ಷ","ಸ","ಹ","ಳ"
+]
+
+let html="<h2>Kannada Alphabet</h2>"
+html+="<div class='grid'>"
+
+letters.forEach(letter=>{
+
+html+=`<div class="letter" onclick="practiceLetter('${letter}')">${letter}</div>`
+
+})
+
+html+="</div>"
+
+html+=`<button onclick="showHome()">Back</button>`
+
+document.getElementById("screen").innerHTML=html
+
+}
 
 function runExercise(){
 
