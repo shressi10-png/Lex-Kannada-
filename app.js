@@ -34,6 +34,16 @@ ${index+1}. ${lesson.name}
 
 })
 
+ function startFromLesson(index){
+
+lessonIndex=index
+exerciseIndex=0
+retryQueue=[]
+
+runExercise()
+
+} 
+
 document.getElementById("screen").innerHTML=html
 
 }
