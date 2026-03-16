@@ -16,7 +16,6 @@ function showHome(){
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Welcome</h2>
 
 <p>Learn to read and write Kannada</p>
@@ -26,7 +25,6 @@ document.getElementById("screen").innerHTML=
 <p>🔥 Streak: ${streak}</p>
 
 <p>Lesson: ${lessonIndex+1} / ${lessons.length}</p>
-
 `
 
 }
@@ -41,7 +39,6 @@ letterIndex = 0
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Lesson ${lessonIndex+1}</h2>
 
 <h1>${lesson.letters.join(" ")}</h1>
@@ -52,8 +49,7 @@ document.getElementById("screen").innerHTML=
 
 <p>Tamil: ${lesson.tamil.join(" / ")}</p>
 
-<button onclick="nextExercise()">Start Exercise</button>
-
+<button onclick="nextExercise()">Start Lesson</button>
 `
 
 }
@@ -75,6 +71,18 @@ showMatch()
 else if(exerciseIndex===2){
 
 showWriting()
+
+}
+
+else if(exerciseIndex===3){
+
+nextLetter()
+
+}
+
+else if(exerciseIndex===4){
+
+showWordQuiz()
 
 }
 
@@ -102,8 +110,8 @@ function showQuiz(){
 
 let lesson = lessons[lessonIndex]
 
-let letter = lesson.letters[letterIndex]
-let sound = lesson.sounds[letterIndex]
+let letter = lesson.letters[0]
+let sound = lesson.sounds[0]
 
 let options=[lesson.letters[0],lesson.letters[1],"ನ"]
 
@@ -112,13 +120,11 @@ options.sort(()=>Math.random()-0.5)
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Which letter is "${sound}"?</h2>
 
 <button onclick="checkAnswer('${options[0]}','${letter}')">${options[0]}</button>
 <button onclick="checkAnswer('${options[1]}','${letter}')">${options[1]}</button>
 <button onclick="checkAnswer('${options[2]}','${letter}')">${options[2]}</button>
-
 `
 
 }
@@ -134,13 +140,11 @@ saveProgress()
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Correct!</h2>
 
 <p>🔥 Streak: ${streak}</p>
 
 <button onclick="nextExercise()">Continue</button>
-
 `
 
 }
@@ -150,11 +154,9 @@ else{
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Try again</h2>
 
 <button onclick="showQuiz()">Retry</button>
-
 `
 
 }
@@ -168,14 +170,12 @@ let lesson=lessons[lessonIndex]
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Match the letters</h2>
 
 <p>${lesson.letters[0]} → ${lesson.sounds[0]}</p>
 <p>${lesson.letters[1]} → ${lesson.sounds[1]}</p>
 
 <button onclick="nextExercise()">Continue</button>
-
 `
 
 }
@@ -184,13 +184,27 @@ function showWriting(){
 
 let lesson = lessons[lessonIndex]
 
-let letter = lesson.letters[letterIndex]
-let sound = lesson.sounds[letterIndex]
+letterIndex=0
+
+drawLetter(lesson.letters[0],lesson.sounds[0])
+
+}
+
+function nextLetter(){
+
+let lesson = lessons[lessonIndex]
+
+letterIndex++
+
+drawLetter(lesson.letters[letterIndex],lesson.sounds[letterIndex])
+
+}
+
+function drawLetter(letter,sound){
 
 document.getElementById("screen").innerHTML=
 
 `
-
 <h2>Trace the letter</h2>
 
 <p>Sound: ${sound}</p>
@@ -198,27 +212,64 @@ document.getElementById("screen").innerHTML=
 <canvas id="canvas" width="320" height="320"
 style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
 
-<button onclick="nextLetter()">Next Letter</button>
-
+<button onclick="nextExercise()">Continue</button>
 `
 
 initCanvas(letter)
 
 }
 
-function nextLetter(){
+function showWordQuiz(){
 
-letterIndex++
+let lesson=lessons[lessonIndex]
 
-if(letterIndex>1){
+let correctWord=lesson.examples[0]
 
-nextExercise()
+let options=[correctWord,"ಮನೆ","ಪುಸ್ತಕ"]
+
+options.sort(()=>Math.random()-0.5)
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Which word means "${lesson.meanings[0]}"?</h2>
+
+<button onclick="checkWord('${options[0]}','${correctWord}')">${options[0]}</button>
+<button onclick="checkWord('${options[1]}','${correctWord}')">${options[1]}</button>
+<button onclick="checkWord('${options[2]}','${correctWord}')">${options[2]}</button>
+`
+
+}
+
+function checkWord(choice,correct){
+
+if(choice===correct){
+
+streak++
+
+saveProgress()
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Correct!</h2>
+
+<p>🔥 Streak: ${streak}</p>
+
+<button onclick="nextExercise()">Finish Lesson</button>
+`
 
 }
 
 else{
 
-showWriting()
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Try again</h2>
+
+<button onclick="showWordQuiz()">Retry</button>
+`
 
 }
 
