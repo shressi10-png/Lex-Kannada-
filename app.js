@@ -2,18 +2,15 @@ let lessonIndex = localStorage.getItem("lessonIndex") ? parseInt(localStorage.ge
 let streak = localStorage.getItem("streak") ? parseInt(localStorage.getItem("streak")) : 0
 
 let exerciseIndex = 0
-let currentLetterIndex = 0
 
 function saveProgress(){
-
 localStorage.setItem("lessonIndex",lessonIndex)
 localStorage.setItem("streak",streak)
-
 }
 
 function showHome(){
 
-document.getElementById("screen").innerHTML =
+document.getElementById("screen").innerHTML=
 
 `
 <h2>Welcome</h2>
@@ -31,14 +28,95 @@ document.getElementById("screen").innerHTML =
 
 function startLesson(){
 
-let lesson = lessons[lessonIndex]
-
 exerciseIndex = 0
 
-document.getElementById("screen").innerHTML =
+runExercise()
+
+}
+
+function runExercise(){
+
+let lesson = lessons[lessonIndex]
+
+if(exerciseIndex===0){
+
+showLetters()
+
+}
+
+else if(exerciseIndex===1){
+
+quizLetter(0)
+
+}
+
+else if(exerciseIndex===2){
+
+showMatch()
+
+}
+
+else if(exerciseIndex===3){
+
+showWriting(0)
+
+}
+
+else if(exerciseIndex===4){
+
+showWriting(1)
+
+}
+
+else if(exerciseIndex===5){
+
+quizLetter(1)
+
+}
+
+else if(exerciseIndex===6){
+
+showWordBreakdown()
+
+}
+
+else{
+
+lessonIndex++
+
+if(lessonIndex>=lessons.length){
+lessonIndex=0
+}
+
+saveProgress()
+
+document.getElementById("screen").innerHTML=
 
 `
-<h2>Lesson ${lessonIndex+1}</h2>
+<h2>✓ Lesson Complete</h2>
+
+<p>Letters learned:</p>
+
+<h1>${lesson.letters.join(" ")}</h1>
+
+<button onclick="showHome()">Next Lesson</button>
+`
+
+return
+}
+
+exerciseIndex++
+
+}
+
+function showLetters(){
+
+let lesson = lessons[lessonIndex]
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Look at these letters</h2>
 
 <h1 style="font-size:70px">${lesson.letters.join("   ")}</h1>
 
@@ -48,77 +126,29 @@ document.getElementById("screen").innerHTML =
 
 <p>Tamil: ${lesson.tamil.join(" / ")}</p>
 
-<button onclick="nextExercise()">Start Lesson</button>
+<button onclick="runExercise()">Continue</button>
 `
 
 }
 
-function nextExercise(){
-
-if(exerciseIndex === 0){
-
-showQuiz()
-
-}
-
-else if(exerciseIndex === 1){
-
-showMatch()
-
-}
-
-else if(exerciseIndex === 2){
-
-showWriting()
-
-}
-
-else{
-
-lessonIndex++
-
-if(lessonIndex >= lessons.length){
-
-lessonIndex = 0
-
-}
-
-saveProgress()
-
-showHome()
-
-}
-
-exerciseIndex++
-
-}
-
-function showQuiz(){
+function quizLetter(index){
 
 let lesson = lessons[lessonIndex]
 
-currentLetterIndex = Math.floor(Math.random()*2)
-
-let correctLetter = lesson.letters[currentLetterIndex]
-let sound = lesson.sounds[currentLetterIndex]
-let hindi = lesson.hindi[currentLetterIndex]
-let tamil = lesson.tamil[currentLetterIndex]
+let correctLetter = lesson.letters[index]
+let sound = lesson.sounds[index]
 
 let options=[lesson.letters[0],lesson.letters[1],"ನ"]
 
 options.sort(()=>Math.random()-0.5)
 
-document.getElementById("screen").innerHTML =
+document.getElementById("screen").innerHTML=
 
 `
 <h2>Which letter is "${sound}"?</h2>
 
-<p>Hindi: ${hindi} | Tamil: ${tamil}</p>
-
 <button onclick="checkAnswer('${options[0]}','${correctLetter}')">${options[0]}</button>
-
 <button onclick="checkAnswer('${options[1]}','${correctLetter}')">${options[1]}</button>
-
 <button onclick="checkAnswer('${options[2]}','${correctLetter}')">${options[2]}</button>
 `
 
@@ -126,32 +156,31 @@ document.getElementById("screen").innerHTML =
 
 function checkAnswer(choice,correct){
 
-if(choice === correct){
+if(choice===correct){
 
 streak++
-
 saveProgress()
 
-document.getElementById("screen").innerHTML =
+document.getElementById("screen").innerHTML=
 
 `
 <h2>✓ Correct</h2>
 
 <p>🔥 Streak: ${streak}</p>
 
-<button onclick="nextExercise()">Continue</button>
+<button onclick="runExercise()">Continue</button>
 `
 
 }
 
 else{
 
-document.getElementById("screen").innerHTML =
+document.getElementById("screen").innerHTML=
 
 `
 <h2>Try again</h2>
 
-<button onclick="showQuiz()">Retry</button>
+<button onclick="runExercise()">Retry</button>
 `
 
 }
@@ -162,28 +191,27 @@ function showMatch(){
 
 let lesson = lessons[lessonIndex]
 
-document.getElementById("screen").innerHTML =
+document.getElementById("screen").innerHTML=
 
 `
 <h2>Match the letters</h2>
 
 <p>${lesson.letters[0]} → ${lesson.sounds[0]}</p>
-
 <p>${lesson.letters[1]} → ${lesson.sounds[1]}</p>
 
-<button onclick="nextExercise()">Continue</button>
+<button onclick="runExercise()">Continue</button>
 `
 
 }
 
-function showWriting(){
+function showWriting(index){
 
 let lesson = lessons[lessonIndex]
 
-let letter = lesson.letters[currentLetterIndex]
-let sound = lesson.sounds[currentLetterIndex]
+let letter = lesson.letters[index]
+let sound = lesson.sounds[index]
 
-document.getElementById("screen").innerHTML =
+document.getElementById("screen").innerHTML=
 
 `
 <h2>Trace the letter</h2>
@@ -195,10 +223,32 @@ document.getElementById("screen").innerHTML =
 <canvas id="canvas" width="320" height="320"
 style="border:2px solid #ccc;border-radius:12px;background:white"></canvas>
 
-<button onclick="showHome()">Finish</button>
+<button onclick="runExercise()">Continue</button>
 `
 
 initCanvas(letter)
+
+}
+
+function showWordBreakdown(){
+
+let lesson = lessons[lessonIndex]
+
+let word = lesson.examples[0]
+
+let letters = word.split("")
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Word structure</h2>
+
+<h1>${word}</h1>
+
+<p>${letters.join(" + ")}</p>
+
+<button onclick="runExercise()">Finish Lesson</button>
+`
 
 }
 
