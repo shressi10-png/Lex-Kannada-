@@ -1,92 +1,71 @@
 body{
-
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
 background:#f4f6fb;
 margin:0;
 text-align:center;
-
-}
-
-h1{
-
-font-size:40px;
-margin-top:20px;
-
-}
-
-h2{
-
-margin-top:30px;
-font-weight:600;
-
 }
 
 #screen{
+padding:20px;
+animation:fade 0.3s ease;
+}
 
-padding:30px;
-animation:fadeIn 0.4s ease;
+h1{
+font-size:40px;
+margin:20px 0;
+}
 
+h2{
+margin-top:10px;
 }
 
 button{
-
 background:#3a7be0;
 border:none;
 color:white;
 padding:16px 24px;
-margin:12px;
+margin:10px;
 font-size:18px;
 border-radius:14px;
 cursor:pointer;
-box-shadow:0 6px 14px rgba(0,0,0,0.12);
-
-transition:all 0.2s ease;
-
-}
-
-button:hover{
-
-transform:translateY(-2px);
-box-shadow:0 10px 18px rgba(0,0,0,0.18);
-
+box-shadow:0 6px 12px rgba(0,0,0,0.15);
 }
 
 button:active{
+transform:scale(0.95);
+}
 
-transform:scale(0.97);
+.grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:10px;
+padding:20px;
+}
 
+.letter{
+background:white;
+border-radius:12px;
+padding:18px;
+font-size:26px;
+box-shadow:0 4px 8px rgba(0,0,0,0.12);
 }
 
 canvas{
-
-margin-top:20px;
-border-radius:12px;
-
+touch-action:none;
 }
 
 .nav{
-
 position:fixed;
 bottom:0;
 width:100%;
 background:white;
-padding:15px 0;
+padding:10px;
 display:flex;
-justify-content:space-evenly;
-box-shadow:0 -4px 12px rgba(0,0,0,0.08);
-
+justify-content:space-around;
+box-shadow:0 -4px 12px rgba(0,0,0,0.1);
 }
 
-@keyframes fadeIn{
-
-from{
-opacity:0;
-transform:translateY(10px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
+@keyframes fade{
+from{opacity:0;transform:translateY(8px)}
+to{opacity:1}
 }
