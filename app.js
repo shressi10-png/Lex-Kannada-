@@ -22,6 +22,21 @@ document.getElementById("screen").innerHTML=
 
 }
 
+function showLessons(){
+
+let html="<h2>Lessons</h2>"
+
+lessons.forEach((lesson,index)=>{
+
+html+=`<button onclick="startFromLesson(${index})">
+${index+1}. ${lesson.name}
+</button><br>`
+
+})
+
+document.getElementById("screen").innerHTML=html
+
+}
 
 
 function startLesson(){
