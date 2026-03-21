@@ -1,17 +1,20 @@
-let currentLesson = 0
+let currentLesson = localStorage.getItem("lesson") ? parseInt(localStorage.getItem("lesson")) : 0
 let step = 0
+let retryQueue = []
+
+
 
 const lessons = [
 
 {
-name:"Vowels 1",
+name:"Vowels",
 letters:["ಅ","ಆ"],
 sounds:["a","aa"],
 word:{
 text:"ಅಮ್ಮ",
 meaning:"mother",
-breakdown:"ಅ + ಮ್ಮ",
-phonetic:"a + mma"
+breakdown:["ಅ","ಮ್ಮ"],
+phonetic:["a","mma"]
 }
 },
 
@@ -22,12 +25,20 @@ sounds:["ka","ga"],
 word:{
 text:"ಕಲ್ಲು",
 meaning:"stone",
-breakdown:"ಕ + ಲ್ಲು",
-phonetic:"ka + llu"
+breakdown:["ಕ","ಲ್ಲು"],
+phonetic:["ka","llu"]
 }
 }
 
 ]
+
+
+
+function saveProgress(){
+
+localStorage.setItem("lesson",currentLesson)
+
+}
 
 
 
@@ -47,6 +58,8 @@ document.getElementById("screen").innerHTML=
 <br>
 
 <button onclick="startStructured()">Structured Lessons</button>
+
+<p>Lesson ${currentLesson+1} / ${lessons.length}</p>
 `
 
 }
@@ -55,8 +68,8 @@ document.getElementById("screen").innerHTML=
 
 function startStructured(){
 
-currentLesson = 0
 step = 0
+retryQueue = []
 
 runLesson()
 
@@ -68,56 +81,67 @@ function runLesson(){
 
 let lesson = lessons[currentLesson]
 
-if(step===0){
+if(step > 7){
 
-showLessonIntro(lesson)
+if(retryQueue.length > 0){
 
-}
-
-else if(step===1){
-
-showLetters(lesson)
+let retry = retryQueue.shift()
+retry()
+return
 
 }
-
-else if(step===2){
-
-letterQuiz(lesson)
-
-}
-
-else if(step===3){
-
-matchExercise(lesson)
-
-}
-
-else if(step===4){
-
-traceLesson(lesson.letters[0])
-
-}
-
-else if(step===5){
-
-showWord(lesson)
-
-}
-
-else{
 
 currentLesson++
+saveProgress()
 
-step=0
+if(currentLesson >= lessons.length){
 
-if(currentLesson>=lessons.length){
-
+currentLesson = 0
 showHome()
 return
 }
 
+step = 0
 runLesson()
 return
+}
+
+
+
+switch(step){
+
+case 0:
+showLessonIntro(lesson)
+break
+
+case 1:
+showLetters(lesson)
+break
+
+case 2:
+letterQuiz(lesson)
+break
+
+case 3:
+matchExercise(lesson)
+break
+
+case 4:
+traceLesson(lesson.letters[0])
+break
+
+case 5:
+showWord(lesson)
+break
+
+case 6:
+wordQuiz(lesson)
+break
+
+case 7:
+showBreakdown(lesson)
+break
+
 }
 
 step++
@@ -132,8 +156,6 @@ document.getElementById("screen").innerHTML=
 
 `
 <h2>${lesson.name}</h2>
-
-<p>Learn new letters</p>
 
 <button onclick="runLesson()">Start</button>
 `
@@ -167,7 +189,6 @@ document.getElementById("screen").innerHTML=
 function letterQuiz(lesson){
 
 let correct = lesson.letters[0]
-
 let options=[...lesson.letters,"ಮ"]
 
 options.sort(()=>Math.random()-0.5)
@@ -177,30 +198,8 @@ document.getElementById("screen").innerHTML=
 `
 <h2>Which letter is "${lesson.sounds[0]}"?</h2>
 
-${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}')">${o}</button>`).join("")}
+${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}',()=>letterQuiz(lesson))">${o}</button>`).join("")}
 `
-
-}
-
-
-
-function checkAnswer(choice,correct){
-
-if(choice===correct){
-
-runLesson()
-
-}else{
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Try Again</h2>
-
-<button onclick="runLesson()">Retry</button>
-`
-
-}
 
 }
 
@@ -262,28 +261,76 @@ document.getElementById("screen").innerHTML=
 
 <br>
 
-<button onclick="showBreakdown('${w.text}','${w.breakdown}','${w.phonetic}')">
-Show Breakdown
-</button>
+<button onclick="runLesson()">Continue</button>
 `
 
 }
 
 
 
-function showBreakdown(word,breakdown,phonetic){
+function wordQuiz(lesson){
+
+let w = lesson.word
+
+let options=[w.text,"ಮನೆ","ನದಿ"]
+
+options.sort(()=>Math.random()-0.5)
 
 document.getElementById("screen").innerHTML=
 
 `
-<h1>${word}</h1>
+<h2>Which word is "${w.meaning}"?</h2>
 
-<p>${breakdown}</p>
-
-<p>${phonetic}</p>
-
-<button onclick="runLesson()">Finish Lesson</button>
+${options.map(o=>`<button onclick="checkAnswer('${o}','${w.text}',()=>wordQuiz(lesson))">${o}</button>`).join("")}
 `
+
+}
+
+
+
+function showBreakdown(lesson){
+
+let w = lesson.word
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Breakdown</h2>
+
+<h1>${w.text}</h1>
+
+<p>${w.breakdown.map(s=>`[${s}]`).join(" ")}</p>
+
+<p>${w.phonetic.join(" + ")}</p>
+
+<button onclick="runLesson()">Finish</button>
+`
+
+}
+
+
+
+function checkAnswer(choice,correct,retry){
+
+if(choice===correct){
+
+runLesson()
+
+}else{
+
+retryQueue.push(retry)
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Try Again</h2>
+
+<p>This will appear later</p>
+
+<button onclick="runLesson()">Continue</button>
+`
+
+}
 
 }
 
