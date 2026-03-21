@@ -1,3 +1,36 @@
+let currentLesson = 0
+let step = 0
+
+const lessons = [
+
+{
+name:"Vowels 1",
+letters:["ಅ","ಆ"],
+sounds:["a","aa"],
+word:{
+text:"ಅಮ್ಮ",
+meaning:"mother",
+breakdown:"ಅ + ಮ್ಮ",
+phonetic:"a + mma"
+}
+},
+
+{
+name:"Velar",
+letters:["ಕ","ಗ"],
+sounds:["ka","ga"],
+word:{
+text:"ಕಲ್ಲು",
+meaning:"stone",
+breakdown:"ಕ + ಲ್ಲು",
+phonetic:"ka + llu"
+}
+}
+
+]
+
+
+
 function showHome(){
 
 document.getElementById("screen").innerHTML=
@@ -13,120 +46,197 @@ document.getElementById("screen").innerHTML=
 
 <br>
 
-<button onclick="startLesson()">Structured Lessons</button>
+<button onclick="startStructured()">Structured Lessons</button>
 `
 
 }
 
 
 
-function showAlphabet(mode="lesson"){
+function startStructured(){
 
-let letters=[
-{l:"ಅ",p:"a"},{l:"ಆ",p:"aa"},{l:"ಇ",p:"i"},{l:"ಈ",p:"ee"},
-{l:"ಉ",p:"u"},{l:"ಊ",p:"oo"},
+currentLesson = 0
+step = 0
 
-{l:"ಕ",p:"ka"},{l:"ಖ",p:"kha"},{l:"ಗ",p:"ga"},{l:"ಘ",p:"gha"},
-{l:"ಚ",p:"cha"},{l:"ಜ",p:"ja"},
+runLesson()
 
-{l:"ಟ",p:"ta"},{l:"ಡ",p:"da"},
-{l:"ತ",p:"ta"},{l:"ದ",p:"da"},
+}
 
-{l:"ಪ",p:"pa"},{l:"ಬ",p:"ba"},{l:"ಮ",p:"ma"}
-]
 
-let html="<h2>Kannada Alphabet</h2><div class='grid'>"
 
-letters.forEach(letter=>{
+function runLesson(){
 
-if(mode==="practice"){
-html+=`
-<div class="letter" onclick="traceSingleLetter('${letter.l}')">
-<div>${letter.l}</div>
-<div style="font-size:14px;color:#555">${letter.p}</div>
-</div>`
+let lesson = lessons[currentLesson]
+
+if(step===0){
+
+showLessonIntro(lesson)
+
+}
+
+else if(step===1){
+
+showLetters(lesson)
+
+}
+
+else if(step===2){
+
+letterQuiz(lesson)
+
+}
+
+else if(step===3){
+
+matchExercise(lesson)
+
+}
+
+else if(step===4){
+
+traceLesson(lesson.letters[0])
+
+}
+
+else if(step===5){
+
+showWord(lesson)
+
+}
+
+else{
+
+currentLesson++
+
+step=0
+
+if(currentLesson>=lessons.length){
+
+showHome()
+return
+}
+
+runLesson()
+return
+}
+
+step++
+
+}
+
+
+
+function showLessonIntro(lesson){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>${lesson.name}</h2>
+
+<p>Learn new letters</p>
+
+<button onclick="runLesson()">Start</button>
+`
+
+}
+
+
+
+function showLetters(lesson){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Letters</h2>
+
+<h1>${lesson.letters.join(" ")}</h1>
+
+<p>${lesson.sounds.join(" / ")}</p>
+
+<button onclick="speak('${lesson.letters[0]}')">🔊 Hear</button>
+
+<br>
+
+<button onclick="runLesson()">Continue</button>
+`
+
+}
+
+
+
+function letterQuiz(lesson){
+
+let correct = lesson.letters[0]
+
+let options=[...lesson.letters,"ಮ"]
+
+options.sort(()=>Math.random()-0.5)
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Which letter is "${lesson.sounds[0]}"?</h2>
+
+${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}')">${o}</button>`).join("")}
+`
+
+}
+
+
+
+function checkAnswer(choice,correct){
+
+if(choice===correct){
+
+runLesson()
+
 }else{
-html+=`
-<div class="letter" onclick="startLetterLesson('${letter.l}','${letter.p}')">
-<div>${letter.l}</div>
-<div style="font-size:14px;color:#555">${letter.p}</div>
-</div>`
-}
-
-})
-
-html+="</div><button onclick='showHome()'>Back</button>"
-
-document.getElementById("screen").innerHTML=html
-
-}
-
-
-
-function startLetterLesson(letter,phonetic){
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Letter Lesson</h2>
+<h2>Try Again</h2>
+
+<button onclick="runLesson()">Retry</button>
+`
+
+}
+
+}
+
+
+
+function matchExercise(lesson){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Match</h2>
+
+<p>${lesson.letters[0]} → ${lesson.sounds[0]}</p>
+<p>${lesson.letters[1]} → ${lesson.sounds[1]}</p>
+
+<button onclick="runLesson()">Continue</button>
+`
+
+}
+
+
+
+function traceLesson(letter){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Trace</h2>
 
 <h1>${letter}</h1>
 
-<p>Sound: ${phonetic}</p>
-
-<button onclick="speak('${letter}')">🔊 Hear Sound</button>
+<canvas id="canvas" style="width:320px;height:320px;border:2px solid #ccc;"></canvas>
 
 <br>
 
-<button onclick="traceSingleLetter('${letter}')">Trace</button>
-
-<br>
-
-<button onclick="startMiniQuiz('${letter}','${phonetic}')">Practice</button>
-
-<br>
-
-<button onclick="showAlphabet()">Back</button>
-`
-
-}
-
-
-
-function showWritingPractice(){
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Writing Practice</h2>
-
-<button onclick="showAlphabet('practice')">Choose Letter</button>
-
-<br>
-
-<button onclick="showHome()">Back</button>
-`
-
-}
-
-
-
-function traceSingleLetter(letter){
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Trace the letter</h2>
-
-<h1>${letter}</h1>
-
-<canvas id="canvas" style="width:320px;height:320px;background:white;border:2px solid #ccc;"></canvas>
-
-<br>
-
-<button onclick="resetCanvas('${letter}')">Retry</button>
-
-<button onclick="showAlphabet('practice')">Back</button>
+<button onclick="runLesson()">Continue</button>
 `
 
 initTraceCanvas()
@@ -135,9 +245,56 @@ initTraceCanvas()
 
 
 
-function resetCanvas(letter){
+function showWord(lesson){
 
-traceSingleLetter(letter)
+let w = lesson.word
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Word</h2>
+
+<h1>${w.text}</h1>
+
+<p>${w.meaning}</p>
+
+<button onclick="speak('${w.text}')">🔊 Hear</button>
+
+<br>
+
+<button onclick="showBreakdown('${w.text}','${w.breakdown}','${w.phonetic}')">
+Show Breakdown
+</button>
+`
+
+}
+
+
+
+function showBreakdown(word,breakdown,phonetic){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h1>${word}</h1>
+
+<p>${breakdown}</p>
+
+<p>${phonetic}</p>
+
+<button onclick="runLesson()">Finish Lesson</button>
+`
+
+}
+
+
+
+function speak(text){
+
+let msg=new SpeechSynthesisUtterance(text)
+msg.lang="kn-IN"
+
+speechSynthesis.speak(msg)
 
 }
 
@@ -198,79 +355,6 @@ canvas.addEventListener("touchend",()=>{
 drawing=false
 
 })
-
-}
-
-
-
-function speak(text){
-
-let msg=new SpeechSynthesisUtterance(text)
-msg.lang="kn-IN"
-
-speechSynthesis.speak(msg)
-
-}
-
-
-
-function startMiniQuiz(letter,phonetic){
-
-let options=[letter,"ಕ","ಮ","ತ"]
-
-options.sort(()=>Math.random()-0.5)
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Which letter is "${phonetic}"?</h2>
-
-${options.map(o=>`<button onclick="checkMini('${o}','${letter}','${phonetic}')">${o}</button>`).join("")}
-`
-
-}
-
-
-
-function checkMini(choice,correct,phonetic){
-
-if(choice===correct){
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Correct</h2>
-
-<button onclick="startLetterLesson('${correct}','${phonetic}')">Continue</button>
-`
-
-}else{
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Try Again</h2>
-
-<button onclick="startMiniQuiz('${correct}','${phonetic}')">Retry</button>
-`
-
-}
-
-}
-
-
-
-function startLesson(){
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Structured Lessons</h2>
-
-<p>Coming next...</p>
-
-<button onclick="showHome()">Back</button>
-`
 
 }
 
