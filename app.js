@@ -3,7 +3,6 @@ let currentLesson = saved ? parseInt(saved) : 0
 if(isNaN(currentLesson)) currentLesson = 0
 
 let step = 0
-let retryQueue = []
 
 
 
@@ -117,7 +116,35 @@ document.getElementById("screen").innerHTML=html
 
 
 
-/* ---------------- WRITING FLOW ---------------- */
+/* ---------------- LETTER LESSON ---------------- */
+
+function startLetterLesson(letter,phonetic){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Letter</h2>
+
+<h1>${letter}</h1>
+
+<p>${phonetic}</p>
+
+<button onclick="speak('${letter}')">🔊 Hear</button>
+
+<br>
+
+<button onclick="traceSingleLetter('${letter}')">Trace</button>
+
+<br>
+
+<button onclick="showAlphabet()">Back</button>
+`
+
+}
+
+
+
+/* ---------------- WRITING ---------------- */
 
 let writingIndex = 0
 
@@ -215,7 +242,6 @@ document.getElementById("screen").innerHTML=html
 function startLesson(index){
 currentLesson = index
 step = 0
-retryQueue = []
 runLesson()
 }
 
@@ -261,6 +287,83 @@ function prevStep(){ if(step>0){step--; runLesson()} }
 
 
 
+/* ---------------- QUIZ FIXED ---------------- */
+
+function quizLetter(lesson){
+
+let correct = lesson.letters[0]
+let options=[...lesson.letters,"ಮ"]
+options.sort(()=>Math.random()-0.5)
+
+let html = `<h2>Find "${lesson.sounds[0]}"</h2>`
+
+options.forEach(o=>{
+html += `<button onclick="handleAnswer('${o}','${correct}','letter')">${o}</button>`
+})
+
+html += navButtons()
+
+document.getElementById("screen").innerHTML = html
+}
+
+
+
+function quizWord(lesson){
+
+let w = lesson.word
+let options=[w.text,"ಮನೆ","ನದಿ"]
+options.sort(()=>Math.random()-0.5)
+
+let html = `<h2>${w.meaning}</h2>`
+
+options.forEach(o=>{
+html += `<button onclick="handleAnswer('${o}','${w.text}','word')">${o}</button>`
+})
+
+html += navButtons()
+
+document.getElementById("screen").innerHTML = html
+}
+
+
+
+/* ---------------- ANSWER HANDLER ---------------- */
+
+function handleAnswer(choice, correct, type){
+
+if(choice === correct){
+
+nextStep()
+
+}else{
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>Try Again</h2>
+
+<button onclick="retryQuestion('${type}')">Retry</button>
+
+<button onclick="nextStep()">Skip</button>
+`
+
+}
+
+}
+
+
+
+function retryQuestion(type){
+
+let lesson = lessons[currentLesson]
+
+if(type==="letter") quizLetter(lesson)
+if(type==="word") quizWord(lesson)
+
+}
+
+
+
 /* ---------------- LESSON SCREENS ---------------- */
 
 function lessonIntro(lesson){
@@ -275,32 +378,12 @@ document.getElementById("screen").innerHTML=
 ${navButtons()}`
 }
 
-function quizLetter(lesson){
-
-let correct = lesson.letters[0]
-let options=[...lesson.letters,"ಮ"]
-options.sort(()=>Math.random()-0.5)
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Find "${lesson.sounds[0]}"</h2>
-${options.map(o=>`<button onclick="checkAnswer('${o}','${correct}')">${o}</button>`).join("")}
-${navButtons()}
-`
-}
-
 function traceLesson(letter){
-
 document.getElementById("screen").innerHTML=
-
-`
-<h2>Trace</h2>
+`<h2>Trace</h2>
 <h1>${letter}</h1>
 <canvas id="canvas" style="width:320px;height:320px;border:2px solid #ccc;"></canvas>
-${navButtons()}
-`
-
+${navButtons()}`
 initTraceCanvas()
 }
 
@@ -309,28 +392,10 @@ function showWord(lesson){
 let w=lesson.word
 
 document.getElementById("screen").innerHTML=
-
-`
-<h1>${w.text}</h1>
+`<h1>${w.text}</h1>
 <p>${w.meaning}</p>
 <button onclick="speak('${w.text}')">🔊</button>
-${navButtons()}
-`
-}
-
-function quizWord(lesson){
-
-let w=lesson.word
-let options=[w.text,"ಮನೆ","ನದಿ"]
-options.sort(()=>Math.random()-0.5)
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>${w.meaning}</h2>
-${options.map(o=>`<button onclick="checkAnswer('${o}','${w.text}')">${o}</button>`).join("")}
-${navButtons()}
-`
+${navButtons()}`
 }
 
 function showBreakdown(lesson){
@@ -338,13 +403,10 @@ function showBreakdown(lesson){
 let w=lesson.word
 
 document.getElementById("screen").innerHTML=
-
-`
-<h1>${w.text}</h1>
+`<h1>${w.text}</h1>
 <p>${w.breakdown.map(s=>`[${s}]`).join(" ")}</p>
 <p>${w.phonetic.join(" + ")}</p>
-${navButtons()}
-`
+${navButtons()}`
 }
 
 function showLessonComplete(){
@@ -356,21 +418,13 @@ document.getElementById("screen").innerHTML=
 
 /* ---------------- HELPERS ---------------- */
 
-function checkAnswer(choice,correct){
-
-if(choice===correct){
-nextStep()
-}else{
-document.getElementById("screen").innerHTML=
-`<h2>Try Again</h2><button onclick="runLesson()">Retry</button>`
-}
-}
-
 function speak(text){
 let msg=new SpeechSynthesisUtterance(text)
 msg.lang="kn-IN"
 speechSynthesis.speak(msg)
 }
+
+
 
 function initTraceCanvas(){
 
