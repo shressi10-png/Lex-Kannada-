@@ -7,12 +7,13 @@ text-align:center;
 
 #screen{
 padding:20px;
+min-height:80vh;
 animation:fade 0.3s ease;
 }
 
 h1{
-font-size:40px;
-margin:20px 0;
+font-size:42px;
+margin:10px 0;
 }
 
 h2{
@@ -45,13 +46,14 @@ padding:20px;
 .letter{
 background:white;
 border-radius:12px;
-padding:18px;
+padding:16px;
 font-size:26px;
 box-shadow:0 4px 8px rgba(0,0,0,0.12);
 }
 
 canvas{
 touch-action:none;
+border-radius:12px;
 }
 
 .nav{
@@ -66,6 +68,6 @@ box-shadow:0 -4px 12px rgba(0,0,0,0.1);
 }
 
 @keyframes fade{
-from{opacity:0;transform:translateY(8px)}
+from{opacity:0;transform:translateY(6px)}
 to{opacity:1}
 }
