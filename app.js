@@ -1,30 +1,5 @@
-let saved = localStorage.getItem("lesson")
-let currentLesson = saved ? parseInt(saved) : 0
-if(isNaN(currentLesson)) currentLesson = 0
-
+let currentLesson = 0
 let step = 0
-
-
-
-/* ---------------- FULL ALPHABET ---------------- */
-
-const fullAlphabet = [
-
-{l:"ಅ",p:"a"},{l:"ಆ",p:"aa"},{l:"ಇ",p:"i"},{l:"ಈ",p:"ee"},
-{l:"ಉ",p:"u"},{l:"ಊ",p:"oo"},{l:"ಋ",p:"ru"},
-{l:"ಎ",p:"e"},{l:"ಏ",p:"ee"},{l:"ಐ",p:"ai"},
-{l:"ಒ",p:"o"},{l:"ಓ",p:"oo"},{l:"ಔ",p:"au"},
-
-{l:"ಕ",p:"ka"},{l:"ಖ",p:"kha"},{l:"ಗ",p:"ga"},{l:"ಘ",p:"gha"},{l:"ಙ",p:"nga"},
-{l:"ಚ",p:"cha"},{l:"ಛ",p:"chha"},{l:"ಜ",p:"ja"},{l:"ಝ",p:"jha"},{l:"ಞ",p:"nya"},
-{l:"ಟ",p:"ta"},{l:"ಠ",p:"tha"},{l:"ಡ",p:"da"},{l:"ಢ",p:"dha"},{l:"ಣ",p:"na"},
-{l:"ತ",p:"ta"},{l:"ಥ",p:"tha"},{l:"ದ",p:"da"},{l:"ಧ",p:"dha"},{l:"ನ",p:"na"},
-{l:"ಪ",p:"pa"},{l:"ಫ",p:"pha"},{l:"ಬ",p:"ba"},{l:"ಭ",p:"bha"},{l:"ಮ",p:"ma"},
-
-{l:"ಯ",p:"ya"},{l:"ರ",p:"ra"},{l:"ಲ",p:"la"},{l:"ವ",p:"va"},
-{l:"ಶ",p:"sha"},{l:"ಷ",p:"sha"},{l:"ಸ",p:"sa"},{l:"ಹ",p:"ha"},{l:"ಳ",p:"la"}
-
-]
 
 
 
@@ -34,8 +9,8 @@ const lessons = [
 
 {
 name:"Vowels",
-letters:["ಅ","ಆ"],
-sounds:["a","aa"],
+letters:["ಅ","ಆ","ಇ","ಈ"],
+sounds:["a","aa","i","ee"],
 word:{
 text:"ಅಮ್ಮ",
 meaning:"mother",
@@ -46,13 +21,31 @@ phonetic:["a","mma"]
 
 {
 name:"Ka Group",
-letters:["ಕ","ಗ"],
-sounds:["ka","ga"],
+letters:["ಕ","ಖ","ಗ"],
+sounds:["ka","kha","ga"],
 word:{
 text:"ಕಲ್ಲು",
 meaning:"stone",
 breakdown:["ಕ","ಲ್ಲು"],
 phonetic:["ka","llu"]
+}
+},
+
+{
+name:"Ma Combinations",
+letters:["ಮ"],
+sounds:["ma"],
+combos:[
+{form:"ಮಾ",sound:"maa"},
+{form:"ಮಿ",sound:"mi"},
+{form:"ಮೂ",sound:"moo"},
+{form:"ಮೆ",sound:"me"}
+],
+word:{
+text:"ಅಮ್ಮ",
+meaning:"mother",
+breakdown:["ಅ","ಮ್ಮ"],
+phonetic:["a","mma"]
 }
 }
 
@@ -69,152 +62,33 @@ document.getElementById("screen").innerHTML=
 `
 <h1>LexKannada</h1>
 
+<button onclick="showLessonMenu()">Structured Lessons</button>
+
+<br>
+
 <button onclick="showAlphabet()">Alphabet Map</button>
 
 <br>
 
 <button onclick="showWritingPractice()">Writing Practice</button>
-
-<br>
-
-<button onclick="showLessonMenu()">Structured Lessons</button>
 `
 
 }
 
 
 
-/* ---------------- ALPHABET ---------------- */
+/* ---------------- PROGRESS BAR ---------------- */
 
-function showAlphabet(mode="lesson"){
+function progressBar(){
 
-let html="<h2>Alphabet</h2><div class='grid'>"
+let total = 7
+let progress = (step / total) * 100
 
-fullAlphabet.forEach((letter,i)=>{
-
-if(mode==="practice"){
-html+=`
-<div class="letter" onclick="startWritingFlow(${i})">
-<div>${letter.l}</div>
-<div style="font-size:14px">${letter.p}</div>
-</div>`
-}else{
-html+=`
-<div class="letter" onclick="startLetterLesson('${letter.l}','${letter.p}')">
-<div>${letter.l}</div>
-<div style="font-size:14px">${letter.p}</div>
-</div>`
-}
-
-})
-
-html+="</div><button onclick='showHome()'>Back</button>"
-
-document.getElementById("screen").innerHTML=html
-
-}
-
-
-
-/* ---------------- LETTER LESSON ---------------- */
-
-function startLetterLesson(letter,phonetic){
-
-document.getElementById("screen").innerHTML=
-
+return `
+<div style="width:90%;margin:auto;height:10px;background:#ddd;border-radius:10px;">
+<div style="width:${progress}%;height:10px;background:#3a7be0;border-radius:10px;"></div>
+</div>
 `
-<h2>Letter</h2>
-
-<h1>${letter}</h1>
-
-<p>${phonetic}</p>
-
-<button onclick="speak('${letter}')">🔊 Hear</button>
-
-<br>
-
-<button onclick="traceSingleLetter('${letter}')">Trace</button>
-
-<br>
-
-<button onclick="showAlphabet()">Back</button>
-`
-
-}
-
-
-
-/* ---------------- WRITING ---------------- */
-
-let writingIndex = 0
-
-function showWritingPractice(){
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Writing Practice</h2>
-
-<button onclick="showAlphabet('practice')">Choose Letter</button>
-
-<br>
-
-<button onclick="showHome()">Back</button>
-`
-
-}
-
-
-
-function startWritingFlow(index){
-writingIndex = index
-showWritingLetter()
-}
-
-
-
-function showWritingLetter(){
-
-let letter = fullAlphabet[writingIndex]
-
-document.getElementById("screen").innerHTML=
-
-`
-<h2>Trace</h2>
-
-<h1>${letter.l}</h1>
-<p>${letter.p}</p>
-
-<canvas id="canvas" style="width:320px;height:320px;border:2px solid #ccc;"></canvas>
-
-<br>
-
-<button onclick="prevWriting()">Back</button>
-<button onclick="nextWriting()">Next</button>
-
-<br>
-
-<button onclick="showAlphabet('practice')">All Letters</button>
-`
-
-initTraceCanvas()
-
-}
-
-
-
-function nextWriting(){
-if(writingIndex < fullAlphabet.length-1){
-writingIndex++
-showWritingLetter()
-}
-}
-
-function prevWriting(){
-if(writingIndex > 0){
-writingIndex--
-showWritingLetter()
-}
 }
 
 
@@ -237,7 +111,7 @@ document.getElementById("screen").innerHTML=html
 
 
 
-/* ---------------- LESSON FLOW ---------------- */
+/* ---------------- FLOW ---------------- */
 
 function startLesson(index){
 currentLesson = index
@@ -258,13 +132,13 @@ return
 
 switch(step){
 
-case 0: lessonIntro(lesson); break
+case 0: intro(lesson); break
 case 1: showLetters(lesson); break
-case 2: quizLetter(lesson); break
-case 3: traceLesson(lesson.letters[0]); break
+case 2: quiz(lesson); break
+case 3: trace(lesson.letters[0]); break
 case 4: showWord(lesson); break
-case 5: quizWord(lesson); break
-case 6: showBreakdown(lesson); break
+case 5: showBreakdown(lesson); break
+case 6: showCombinations(lesson); break
 
 }
 
@@ -274,149 +148,192 @@ case 6: showBreakdown(lesson); break
 
 /* ---------------- NAV ---------------- */
 
-function navButtons(){
+function nav(){
+
 return `
+${progressBar()}
 <br>
-<button onclick="prevStep()">Back</button>
-<button onclick="nextStep()">Next</button>
+<button onclick="step--;runLesson()">Back</button>
+<button onclick="step++;runLesson()">Next</button>
 `
 }
 
-function nextStep(){ step++; runLesson() }
-function prevStep(){ if(step>0){step--; runLesson()} }
+
+
+/* ---------------- SCREENS ---------------- */
+
+function intro(lesson){
+
+document.getElementById("screen").innerHTML=
+
+`
+<h2>${lesson.name}</h2>
+<p>Learn and understand</p>
+${nav()}
+`
+}
 
 
 
-/* ---------------- QUIZ FIXED ---------------- */
+function showLetters(lesson){
 
-function quizLetter(lesson){
+document.getElementById("screen").innerHTML=
+
+`
+<h1>${lesson.letters.join(" ")}</h1>
+<p>${lesson.sounds.join(" / ")}</p>
+
+<button onclick="speak('${lesson.letters[0]}')">🔊</button>
+
+${nav()}
+`
+}
+
+
+
+function quiz(lesson){
 
 let correct = lesson.letters[0]
 let options=[...lesson.letters,"ಮ"]
+
 options.sort(()=>Math.random()-0.5)
 
-let html = `<h2>Find "${lesson.sounds[0]}"</h2>`
+let html=`<h2>Find "${lesson.sounds[0]}"</h2>`
 
 options.forEach(o=>{
-html += `<button onclick="handleAnswer('${o}','${correct}','letter')">${o}</button>`
+html+=`<button onclick="answer('${o}','${correct}')">${o}</button>`
 })
 
-html += navButtons()
+html+=nav()
 
-document.getElementById("screen").innerHTML = html
+document.getElementById("screen").innerHTML=html
 }
 
 
 
-function quizWord(lesson){
+function answer(choice,correct){
 
-let w = lesson.word
-let options=[w.text,"ಮನೆ","ನದಿ"]
-options.sort(()=>Math.random()-0.5)
-
-let html = `<h2>${w.meaning}</h2>`
-
-options.forEach(o=>{
-html += `<button onclick="handleAnswer('${o}','${w.text}','word')">${o}</button>`
-})
-
-html += navButtons()
-
-document.getElementById("screen").innerHTML = html
-}
-
-
-
-/* ---------------- ANSWER HANDLER ---------------- */
-
-function handleAnswer(choice, correct, type){
-
-if(choice === correct){
-
-nextStep()
-
+if(choice===correct){
+step++
+runLesson()
 }else{
+alert("Try again")
+}
+}
+
+
+
+/* ---------------- TRACE WITH GUIDE ---------------- */
+
+function trace(letter){
 
 document.getElementById("screen").innerHTML=
 
 `
-<h2>Try Again</h2>
+<h2>Trace</h2>
 
-<button onclick="retryQuestion('${type}')">Retry</button>
+<div style="position:relative;width:320px;height:320px;margin:auto;">
 
-<button onclick="nextStep()">Skip</button>
-`
+<div style="
+position:absolute;
+font-size:180px;
+color:#ccc;
+top:20px;
+left:60px;
+pointer-events:none;">
+${letter}
+</div>
 
-}
-
-}
-
-
-
-function retryQuestion(type){
-
-let lesson = lessons[currentLesson]
-
-if(type==="letter") quizLetter(lesson)
-if(type==="word") quizWord(lesson)
-
-}
-
-
-
-/* ---------------- LESSON SCREENS ---------------- */
-
-function lessonIntro(lesson){
-document.getElementById("screen").innerHTML=
-`<h2>${lesson.name}</h2>${navButtons()}`
-}
-
-function showLetters(lesson){
-document.getElementById("screen").innerHTML=
-`<h1>${lesson.letters.join(" ")}</h1>
-<p>${lesson.sounds.join(" / ")}</p>
-${navButtons()}`
-}
-
-function traceLesson(letter){
-document.getElementById("screen").innerHTML=
-`<h2>Trace</h2>
-<h1>${letter}</h1>
 <canvas id="canvas" style="width:320px;height:320px;border:2px solid #ccc;"></canvas>
-${navButtons()}`
-initTraceCanvas()
+
+</div>
+
+${nav()}
+`
+
+initCanvas()
 }
+
+
+
+/* ---------------- WORD ---------------- */
 
 function showWord(lesson){
 
-let w=lesson.word
+let w = lesson.word
 
 document.getElementById("screen").innerHTML=
-`<h1>${w.text}</h1>
+
+`
+<h1>${w.text}</h1>
 <p>${w.meaning}</p>
+
 <button onclick="speak('${w.text}')">🔊</button>
-${navButtons()}`
+
+${nav()}
+`
 }
+
+
 
 function showBreakdown(lesson){
 
-let w=lesson.word
+let w = lesson.word
 
 document.getElementById("screen").innerHTML=
-`<h1>${w.text}</h1>
-<p>${w.breakdown.map(s=>`[${s}]`).join(" ")}</p>
+
+`
+<h1>${w.text}</h1>
+
+<p>${w.breakdown.map(x=>`[${x}]`).join(" ")}</p>
+
 <p>${w.phonetic.join(" + ")}</p>
-${navButtons()}`
+
+${nav()}
+`
 }
+
+
+
+/* ---------------- COMBINATIONS ---------------- */
+
+function showCombinations(lesson){
+
+if(!lesson.combos){
+step++
+runLesson()
+return
+}
+
+let html=`<h2>Combinations</h2>`
+
+lesson.combos.forEach(c=>{
+html+=`<p>${c.form} → ${c.sound}</p>`
+})
+
+html+=nav()
+
+document.getElementById("screen").innerHTML=html
+}
+
+
+
+/* ---------------- COMPLETE ---------------- */
 
 function showLessonComplete(){
+
 document.getElementById("screen").innerHTML=
-`<h2>Lesson Complete</h2><button onclick="showLessonMenu()">Back</button>`
+
+`
+<h2>Lesson Complete</h2>
+
+<button onclick="showLessonMenu()">Back</button>
+`
 }
 
 
 
-/* ---------------- HELPERS ---------------- */
+/* ---------------- AUDIO ---------------- */
 
 function speak(text){
 let msg=new SpeechSynthesisUtterance(text)
@@ -426,7 +343,9 @@ speechSynthesis.speak(msg)
 
 
 
-function initTraceCanvas(){
+/* ---------------- CANVAS ---------------- */
+
+function initCanvas(){
 
 let canvas=document.getElementById("canvas")
 let ctx=canvas.getContext("2d")
@@ -440,30 +359,28 @@ ctx.lineWidth=8
 ctx.lineCap="round"
 
 let drawing=false
-let lastX=0
-let lastY=0
 
 canvas.addEventListener("touchstart",(e)=>{
 drawing=true
 let rect=canvas.getBoundingClientRect()
-lastX=e.touches[0].clientX-rect.left
-lastY=e.touches[0].clientY-rect.top
 ctx.beginPath()
-ctx.moveTo(lastX,lastY)
+ctx.moveTo(
+e.touches[0].clientX-rect.left,
+e.touches[0].clientY-rect.top
+)
 },{passive:false})
 
 canvas.addEventListener("touchmove",(e)=>{
 if(!drawing)return
 let rect=canvas.getBoundingClientRect()
-let x=e.touches[0].clientX-rect.left
-let y=e.touches[0].clientY-rect.top
-ctx.lineTo(x,y)
+ctx.lineTo(
+e.touches[0].clientX-rect.left,
+e.touches[0].clientY-rect.top
+)
 ctx.stroke()
-lastX=x
-lastY=y
 },{passive:false})
 
-canvas.addEventListener("touchend",()=>{drawing=false})
+canvas.addEventListener("touchend",()=>drawing=false)
 
 }
 
